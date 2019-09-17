@@ -1,0 +1,13 @@
+input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+th,
+td {
+    text-align: center;
+}
+
+.container {
+    padding-top: 10px;
+    margin-bottom: 40px;
+}
