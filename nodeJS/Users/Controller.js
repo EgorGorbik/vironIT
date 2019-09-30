@@ -1,42 +1,50 @@
 const fs = require("fs");
+const joi = require('joi');
+const Service = require('./Service') ;
+const mongoService = require('./MongoService') ;
 class Controller {
-constructor(users) {
-
-    this.users = users;
-    console.log('constructor')
+    constructor() {
+        this.service = new mongoService();
+        this.schema = joi.object().keys({
+            name: joi.string().required(),
+            //email: joi.string().email().required()
+    })
 }
 
-    getUser(id) {
-        let user = this.users.find(function (user) {
-            return user.id === id
-        });
-        return user;
+   async getUser(req, res) {
+        let user = await this.service.getUser(req.params.id);
+        res.send(user)
     }
 
-    createUser(name) {
-        var user = {
-            name: name,
-            id: this.users.length+1
-        }
-        this.users.push(user);
-        fs.writeFileSync('data.json', JSON.stringify(this.users, null, 4));
-    }
-
-    updateUser(id, name) {
-        let user = this.users.find(function (user) {
-            return user.id === id
-        });
-        user.name = name;
-        fs.writeFileSync('data.json', JSON.stringify(this.users, null, 4));
-    }
-
-    deleteUser(id) {
-        this.users = this.users.filter(function(user) {
-            return user.id !== id;
+    createUser(req, res) {
+        let rezult = '';
+        joi.validate(req.body, this.schema, (err, result) => {
+            if(err) {
+                rezult= 'error! Wrong name'
+            } else {
+                rezult = this.service.createUser(req.body.name);
+            }
         })
-        fs.writeFileSync('data.json', JSON.stringify(this.users, null, 4));
+        res.send(rezult);
+    }
+
+    updateUser(req, res) {
+        let rezult = '';
+        joi.validate(req.body, this.schema, (err, result) => {
+            if(err) {
+                rezult= 'error! Wrong name'
+            } else {
+                rezult = this.service.updateUser(req.params.id, req.body.name);
+            }
+        })
+        res.send(rezult);
+    }
+
+    deleteUser(req, res) {
+        this.service.deleteUser(req.params.id);
+        res.sendStatus(200)
     }
 
 }
 
-module.exports.Controller = Controller;
+module.exports = Controller;
