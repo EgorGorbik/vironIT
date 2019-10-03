@@ -15,10 +15,7 @@ class Stage {
     }
 
     async getTable(id) {
-        this.stage.find(function (err, users) {
-            console.log(users)
-        })
-        return this.stage.findOne({_id: id}) // TODO install Robo3T
+        return await this.stage.findOne({_id: id}) // TODO install Robo3T
     }
 
     createTable(title, description, location, id) {

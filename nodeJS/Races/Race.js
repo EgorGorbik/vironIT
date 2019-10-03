@@ -12,10 +12,7 @@ class Race {
     }
 
     async getTable(id) {
-        this.race.find(function (err, users) {
-            console.log(users)
-        })
-        return this.race.findOne({_id: id}) // TODO install Robo3T
+        return await this.race.findOne({_id: id}) // TODO install Robo3T
     }
 
     getRace() {

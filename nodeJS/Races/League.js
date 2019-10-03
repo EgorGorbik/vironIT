@@ -81,10 +81,7 @@ class League {
     }
 
     async getTable(id) {
-        this.user.find(function (err, users) {
-            console.log(users)
-        })
-        return this.league.findOne({_id: id}) // TODO install Robo3T
+        return await this.league.findOne({_id: id}) // TODO install Robo3T
     }
 
     createTable(title, description, season, users_id) {

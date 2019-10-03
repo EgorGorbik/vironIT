@@ -91,7 +91,7 @@ class User {
         this.user.find(function (err, users) {
             console.log(users)
         })
-        let k = this.user.findOne({_id: id});
+        let k = await this.user.findOne({_id: id});
         console.log(k)
         return k // TODO install Robo3T
     }

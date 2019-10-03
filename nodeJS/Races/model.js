@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test1', {
+mongoose.connect('mongodb://localhost/test', {
     keepAlive: true,
     useNewUrlParser: true,
     useCreateIndex: true,
