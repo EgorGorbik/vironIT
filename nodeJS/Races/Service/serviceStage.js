@@ -1,5 +1,5 @@
-var mongoose = require('./model');
-class Stage {
+var mongoose = require('../model');
+class ServiceStage {
     constructor() {
         var stageSchema = new mongoose.Schema({
             title: String,
@@ -35,4 +35,4 @@ class Stage {
 
 }
 
-module.exports = Stage;
+module.exports = ServiceStage;

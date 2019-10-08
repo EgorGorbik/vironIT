@@ -1,5 +1,5 @@
-var mongoose = require('./model');
-class Race {
+var mongoose = require('../model');
+class ServiceRace {
     constructor() {
         var raceSchema = new mongoose.Schema({
             time: Number,
@@ -35,4 +35,4 @@ class Race {
 
 }
 
-module.exports = Race;
+module.exports = ServiceRace;

@@ -1,5 +1,5 @@
-var mongoose = require('./model');
-class League {
+var mongoose = require('../model');
+class ServiceLeague {
     constructor() {
         var leagueSchema = new mongoose.Schema({
             title: String,
@@ -111,4 +111,4 @@ class League {
 
 }
 
-module.exports = League;
+module.exports = ServiceLeague;

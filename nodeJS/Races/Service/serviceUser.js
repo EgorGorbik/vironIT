@@ -1,5 +1,5 @@
-var mongoose = require('./model');
-class User {
+var mongoose = require('../model');
+class ServiceUser {
     constructor() {
         var usersSchema = new mongoose.Schema({
             name: String,
@@ -9,7 +9,7 @@ class User {
         this.user = mongoose.model('User', usersSchema);
     }
 
-   async getUserWithRace() {
+   async getUserWithRace(id) {
        let result = await this.user.aggregate([
                {
                    $project: {
@@ -31,12 +31,13 @@ class User {
 
                         }
                 },
-               { $match : { _id : '5d9355cff9f67f1d14f27de1' } },
+               { $match : { _id : id } },
             ],
             async function (err, response) {
                 if (err) {
                     console.log(err);
                 } else {
+                    console.log('res')
                     console.log(response)
                 }
             }
@@ -47,7 +48,7 @@ class User {
 
 
 
-    async getUserForLeague() {
+    async getUserForLeague(id) {
         let result = await this.user.aggregate([
                 {
                     $project: {
@@ -69,7 +70,7 @@ class User {
 
                         }
                 },
-                { $match : { _id : '5d9355cff9f67f1d14f27de1' } },
+                { $match : { _id : id } },
             ],
             async function (err, response) {
                 if (err) {
@@ -88,12 +89,7 @@ class User {
 
 
     async getTable(id) {
-        this.user.find(function (err, users) {
-            console.log(users)
-        })
-        let k = await this.user.findOne({_id: id});
-        console.log(k)
-        return k // TODO install Robo3T
+        return await this.user.findOne({_id: id}); // TODO install Robo3T
     }
 
     createTable(name, surname, username) {
@@ -106,14 +102,17 @@ class User {
         return await this.user.findOneAndUpdate({_id: id}, {$set: {name: name, surname: surname, username: username}}, {new: true})
     }
 
-    async deleteTable(id, race, league) {
+    async deleteUser(id, race, league) {
         let tempLeague = await league.findOne({users_id: id});
-        tempLeague['users_id'].splice(tempLeague['users_id'].indexOf(id), 1)
-        await league.findOneAndUpdate({_id: tempLeague['_id']}, tempLeague )
+        if(tempLeague !== null) {
+            tempLeague['users_id'].splice(tempLeague['users_id'].indexOf(id), 1)
+            await league.findOneAndUpdate({_id: tempLeague['_id']}, tempLeague )
+        }
+
         await race.findOneAndDelete({user_id: id});
         await this.user.findOneAndDelete({_id: id});
     }
 
 }
 
-module.exports = User;
+module.exports = ServiceUser;
