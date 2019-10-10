@@ -1,13 +1,31 @@
 const port = 3000;
-const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 const Controller = require('./Controller') ;
 
 function router(app) {
-    app.use(bodyParser.urlencoded({extended: true}));
-    app.use(bodyParser.json());
-
     let controller = new Controller();
 
+    app.post('/api/login', (req, res) => {
+        const user = {
+            name: req.body.name
+        }
+        jwt.sign({user}, 'secretkey', (err, token) => {
+            res.json({
+                token
+            })
+        })
+    })
+
+    function verifyToken(req, res, next) {
+        const headerToken = req.headers['authorization'];
+        if(typeof headerToken !== 'undefined') {
+            req.token = headerToken;
+            next();
+        } else {
+            res.sendStatus(403)
+        }
+
+    }
 
     //additionally
 
@@ -26,7 +44,7 @@ function router(app) {
        404:
          description: A user with the specified ID was not found.
 */
-    app.get('/getUserRaces/:id', (req, res) => {controller.getUserRaces(req, res)})
+    app.get('/getUserRaces/:id', verifyToken, controller.getUserRaces)
 
     /*
 * @oas [get] /getUserLeagues/{userId}
@@ -43,7 +61,7 @@ function router(app) {
        404:
          description: A user with the specified ID was not found.
 */
-    app.get('/getUserLeagues/:id', (req, res) => {controller.getUserLeagues(req, res)})
+    app.get('/getUserLeagues/:id', controller.getUserLeagues)
 
     /*
 * @oas [get] /getSeasonRaces/{season}
@@ -60,7 +78,7 @@ function router(app) {
        404:
          description: Races with this season was not found.
 */
-    app.get('/getSeasonRaces/:season', (req, res) => {controller.getSeasonRaces(req, res)})
+    app.get('/getSeasonRaces/:season', controller.getSeasonRaces)
 
     //CRUD
     /*
@@ -79,7 +97,7 @@ function router(app) {
         404:
           description: A user with the specified ID was not found.
 */
-    app.get('/:table/:id', (req, res) => {controller.getInstance(req, res)})
+    app.get('/:table/:id', controller.getInstance)
 
     /*
  * @oas [post] /{table}
@@ -96,7 +114,7 @@ function router(app) {
         404:
           description: Instance by given name was not found.
 */
-    app.post('/:table', function (req, res) {controller.createInstance(req, res)});
+    app.post('/:table', controller.createInstance);
 
     /*
 * @oas [put] /{table}/{tableId}
@@ -114,7 +132,7 @@ function router(app) {
        404:
          description: Instance by given name or id was not found.
 */
-    app.put('/:table/:id', function (req, res) {controller.updateInstance(req, res)})
+    app.put('/:table/:id', controller.updateInstance)
 
     /*
  * @oas [delete] /{table}/{tableId}
@@ -132,7 +150,7 @@ function router(app) {
         404:
           description: A user with the specified ID was not found.
 */
-    app.delete('/:table/:id', function (req, res) {controller.deleteInstance(req, res)})
+    app.delete('/:table/:id', controller.deleteInstance)
 
     app.listen(port, (err) => {
         if (err) {

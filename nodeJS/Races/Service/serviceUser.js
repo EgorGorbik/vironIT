@@ -37,7 +37,6 @@ class ServiceUser {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log('res')
                     console.log(response)
                 }
             }
@@ -88,18 +87,18 @@ class ServiceUser {
 
 
 
-    async getTable(id) {
-        return await this.user.findOne({_id: id}); // TODO install Robo3T
+    async getTable(_id) {
+        return await this.user.findOne({_id});
     }
 
     createTable(name, surname, username) {
-        var user = new this.user({ name: name, surname: surname, username: username});
+        var user = new this.user({ name, surname, username});
         user.save();
         return user;
     }
 
-    async updateTable(id, name, surname, username) {
-        return await this.user.findOneAndUpdate({_id: id}, {$set: {name: name, surname: surname, username: username}}, {new: true})
+    async updateTable(_id, name, surname, username) {
+        return await this.user.findOneAndUpdate({_id}, {$set: {name, surname, username}}, {new: true})
     }
 
     async deleteUser(id, race, league) {

@@ -27,6 +27,9 @@ class leagueController {
             console.log(e);
             return "invalid stage id"
         }
+        if(tempStage === null) {
+            return "This stage does not exist"
+        }
         let leagueID = tempStage.league_id;
         let tempLeague = await league.findOne({_id: leagueID});
         let arrayUserID = tempLeague.users_id;
@@ -34,6 +37,8 @@ class leagueController {
             if(operation === 'create') {
                 return await joi.validate(req.body, this.schemaRace, (err, result) => {
                     if (err) {
+                        console.log('errrrr')
+                        console.log(err)
                         return err
                     } else {
                         let temp = this.race.createTable(req.body.time, req.body.description, req.body.title, req.body.user_id, req.body.stage_id);
@@ -56,14 +61,20 @@ class leagueController {
         }
     }
 
-    async createRace(req, res, operation, stage, league, user) {
-        let rezult = await this.additionalValidation(req, res, operation, stage, league, user);
+    async createRace(req, res, operation, obj) {
+        let rezult = await this.race.createTable(req.body.time, req.body.description, req.body.title, req.body.user_id, req.body.stage_id,
+            obj.stage, obj.league);
+
+        //let rezult = await this.additionalValidation(req, res, operation, stage, league, user);
         console.log(rezult)
         return rezult
     }
 
-    async updateRace(req, res, operation, stage, league, user) {
-        let rezult = await this.additionalValidation(req, res, operation, stage, league, user);
+    async updateRace(req, res, operation, obj) {
+        let rezult = await this.race.updateTable(req.params.id, req.body.time, req.body.description, req.body.title, req.body.user_id, req.body.stage_id,
+            obj.stage, obj.league);
+
+        //let rezult = await this.additionalValidation(req, res, operation, stage, league, user);
         console.log(rezult)
         return rezult
     }

@@ -2,6 +2,7 @@ const User = require('./Controllers/userController') ;
 const Race = require('./Controllers/raceController') ;
 const League = require('./Controllers/leagueController') ;
 const Stage = require('./Controllers/stageController') ;
+const jwt = require('jsonwebtoken');
 
 class Controller {
     constructor() {
@@ -9,11 +10,25 @@ class Controller {
         this.race = new Race();
         this.league = new League();
         this.stage = new Stage();
+        this.getUserRaces = this.getUserRaces.bind(this);
+        this.getUserLeagues = this.getUserLeagues.bind(this);
+        this.getSeasonRaces = this.getSeasonRaces.bind(this);
+        this.getInstance = this.getInstance.bind(this);
+        this.createInstance = this.createInstance.bind(this);
+        this.updateInstance = this.updateInstance.bind(this);
+        this.deleteInstance = this.deleteInstance.bind(this);
     }
 
     async getUserRaces (req, res) {
         let user = await this.user.getUserWithRace(req.params.id);
-        res.send(user)
+        jwt.verify(req.token, 'secretkey', (err, authData) => {
+            if(err) {
+                res.sendStatus(403)
+            } else {
+                res.send(user)
+            }
+        });
+
     }
 
     async getUserLeagues (req, res) {
@@ -52,7 +67,10 @@ class Controller {
                 rezult = this.user.createUser(req, res);
                 break;
             case 'race':
-                rezult = await this.race.createRace(req, res, 'create', this.stage.getStageModel(), this.league.getLeagueModel(), this.user.getUserModel());
+                let obj = {};
+                obj['stage'] = this.stage.getStageModel();
+                obj['league'] = this.league.getLeagueModel();
+                rezult = await this.race.createRace(req, res, 'create', obj);
                 break;
             case 'league':
                 rezult = this.league.createLeague(req, res);
@@ -70,7 +88,10 @@ class Controller {
             case 'user':
                 rezult = await this.user.updateUser(req, res);
             case 'race':
-                rezult = await this.race.updateRace(req, res, 'update', this.stage.getStageModel(), this.league.getLeagueModel(), this.user.getUserModel());
+                let obj = {};
+                obj['stage'] = this.stage.getStageModel();
+                obj['league'] = this.league.getLeagueModel();
+                rezult = await this.race.updateRace(req, res, 'update', obj);
                 break;
             case 'league':
                 rezult = await this.league.updateLeague(req, res);

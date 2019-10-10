@@ -11,26 +11,53 @@ class ServiceRace {
         this.race = mongoose.model('Race', raceSchema);
     }
 
-    async getTable(id) {
-        return await this.race.findOne({_id: id}) // TODO install Robo3T
+    async getTable(_id) {
+        return await this.race.findOne({_id}) // TODO install Robo3T
     }
 
-    getRace() {
-        return this.race;
+    async additionalValidation(time, description, title, user_id, stage_id, operation, stage, league, id) {
+        let tempStage;
+        try {
+            tempStage = await stage.findOne({_id: stage_id});
+        } catch (e) {
+            return 'гонки по данному id не существует'
+        }
+        if (tempStage === null) {
+            return 'гонки по данному id не существует'
+        }
+        let leagueID = tempStage.league_id;
+        let tempLeague = await league.findOne({_id: leagueID});
+        let arrayUserID = tempLeague.users_id;
+        if (arrayUserID.indexOf(user_id) !== -1) {
+                return true
+        } else {
+            return 'user не из этой лиги'
+        }
     }
 
-    createTable(time, description, title, user_id, stage_id) {
-        var user = new this.race({ time: time, description: description, title: title, user_id: user_id, stage_id: stage_id });
-        user.save();
-        return user;
+    async createTable(time, description, title, user_id, stage_id, stage, league) {
+        let resultOfValidation = await this.additionalValidation( time, description, title, user_id, stage_id, 'create', stage, league);
+        if (resultOfValidation === true) {
+            var user = new this.race({time, description, title, user_id, stage_id});
+            user.save();
+            return user;
+        } else {
+            return resultOfValidation
+        }
     }
 
-    async updateTable(id, time, description, title) {
-        return await this.race.findOneAndUpdate({_id: id}, {$set: {time: time, description: description, title: title}}, {new: true})
+    async updateTable(_id, time, description, title, user_id, stage_id, stage, league) {
+        let resultOfValidation = await this.additionalValidation( time, description, title, user_id, stage_id, 'create', stage, league);
+        if (resultOfValidation === true) {
+            var user = this.race.findOneAndUpdate({_id}, {$set: {time, description, title, user_id, stage_id}}, {new: true})
+            return user;
+        } else {
+            return resultOfValidation
+        }
     }
 
-    async deleteTable(id) {
-        await this.race.findOneAndDelete({_id: id});
+    async deleteTable(_id) {
+        await this.race.findOneAndDelete({_id});
     }
 
 }

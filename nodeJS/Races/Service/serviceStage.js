@@ -14,18 +14,18 @@ class ServiceStage {
         return this.stage;
     }
 
-    async getTable(id) {
-        return await this.stage.findOne({_id: id}) // TODO install Robo3T
+    async getTable(_id) {
+        return await this.stage.findOne({_id}) // TODO install Robo3T
     }
 
-    createTable(title, description, location, id) {
-        var user = new this.stage({ title: title, description: description, location: location, league_id: id });
+    createTable(title, description, location, league_id) {
+        var user = new this.stage({ title, description, location, league_id });
         user.save();
         return user;
     }
 
-    async updateTable(id, title, description, location, league_id) {
-        return await this.stage.findOneAndUpdate({_id: id}, {$set: {title: title, description: description, location: location, league_id: league_id}}, {new: true})
+    async updateTable(_id, title, description, location, league_id) {
+        return await this.stage.findOneAndUpdate({_id}, {$set: {title, description, location, league_id}}, {new: true})
     }
 
     async deleteTable(id, race) {

@@ -80,19 +80,19 @@ class ServiceLeague {
         return this.league;
     }
 
-    async getTable(id) {
-        return await this.league.findOne({_id: id}) // TODO install Robo3T
+    async getTable(_id) {
+        return await this.league.findOne({_id}) // TODO install Robo3T
     }
 
     createTable(title, description, season, users_id) {
         console.log(users_id)
-        var user = new this.league({ title: title, description: description, season: season, users_id: users_id });
+        var user = new this.league({ title, description, season, users_id });
         user.save();
         return user;
     }
 
-    async updateTable(id, title, description, season, users_id) {
-        return await this.league.findOneAndUpdate({_id: id}, {$set: {title: title, description: description, season: season, users_id: users_id}}, {new: true})
+    async updateTable(_id, title, description, season, users_id) {
+        return await this.league.findOneAndUpdate({_id}, {$set: {title, description, season, users_id}}, {new: true})
     }
 
     async deleteTable(id, stage, race) {
