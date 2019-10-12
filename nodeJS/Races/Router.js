@@ -44,7 +44,7 @@ function router(app) {
        404:
          description: A user with the specified ID was not found.
 */
-    app.get('/getUserRaces/:id', verifyToken, controller.getUserRaces)
+    app.get('/getUserRaces/:id', controller.getUserRaces)
 
     /*
 * @oas [get] /getUserLeagues/{userId}
@@ -79,6 +79,7 @@ function router(app) {
          description: Races with this season was not found.
 */
     app.get('/getSeasonRaces/:season', controller.getSeasonRaces)
+
 
     //CRUD
     /*

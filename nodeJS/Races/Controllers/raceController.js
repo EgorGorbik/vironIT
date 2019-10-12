@@ -13,6 +13,10 @@ class leagueController {
         });
     }
 
+    getRaceModel() {
+        return this.race.getRace()
+    }
+
     async getRace(req, res) {
         let user = "";
         user = await this.race.getTable(req.params.id);
@@ -62,26 +66,38 @@ class leagueController {
     }
 
     async createRace(req, res, operation, obj) {
-        let rezult = await this.race.createTable(req.body.time, req.body.description, req.body.title, req.body.user_id, req.body.stage_id,
-            obj.stage, obj.league);
-
-        //let rezult = await this.additionalValidation(req, res, operation, stage, league, user);
-        console.log(rezult)
-        return rezult
+        let result = await joi.validate(req.body, this.schemaRace, async (err, result) => {
+            if (err) {
+                return err.message
+            } else {
+                return await this.race.createTable(req.body.time, req.body.description, req.body.title, req.body.user_id, req.body.stage_id,
+                    obj.stage, obj.league);
+            }
+        })
+        res.send(result)
     }
 
     async updateRace(req, res, operation, obj) {
-        let rezult = await this.race.updateTable(req.params.id, req.body.time, req.body.description, req.body.title, req.body.user_id, req.body.stage_id,
-            obj.stage, obj.league);
-
-        //let rezult = await this.additionalValidation(req, res, operation, stage, league, user);
-        console.log(rezult)
-        return rezult
+        let result = await joi.validate(req.body, this.schemaRace, async (err, result) => {
+            if (err) {
+                return err.message
+            } else {
+                return await this.race.updateTable(req.params.id, req.body.time, req.body.description, req.body.title, req.body.user_id, req.body.stage_id,
+                    obj.stage, obj.league);
+            }
+        })
+        res.send(result)
     }
 
 
-    deleteRace(id) {
-        this.race.deleteTable(id);
+    async deleteRace(id, res) {
+        let result = await this.race.deleteTable(id);
+        if (result === null) {
+            res.send('This user does not exist')
+            res.sendStatus(200)
+        } else {
+            res.send(result)
+        }
     }
 }
 

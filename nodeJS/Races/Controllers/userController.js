@@ -30,20 +30,18 @@ class userController {
     }
 
     async createUser(req, res) {
-        let rezult = '';
-                joi.validate(req.body, this.schemaUser, (err, result) => {
+        let result = joi.validate(req.body, this.schemaUser, (err, result) => {
                     if (err) {
-                        rezult = 'error! Invalid date'
+                        return 'error! Invalid date'
                     } else {
-                        rezult = this.user.createTable(req.body.name, req.body.surname, req.body.username);
+                        return this.user.createTable(req.body.name, req.body.surname, req.body.username);
                     }
                 })
-        res.send(rezult);
+        res.send(result);
     }
 
     async updateUser(req, res) {
-        let rezult;
-                rezult = await joi.validate(req.body, this.schemaUser, (err, result) => {
+                let rezult = await joi.validate(req.body, this.schemaUser, (err, result) => {
                     if (err) {
                         return 'error! Invalid date'
                     } else {
@@ -54,8 +52,13 @@ class userController {
         res.send(rezult);
     }
 
-    deleteUser(id, race, league) {
-        this.user.deleteUser(id, race, league);
+    async deleteUser(res, id, race, league) {
+        let result = await this.user.deleteUser(id, race, league);
+        if (result !== null) {
+            res.sendStatus(200)
+        } else {
+            res.send('This user does not exist')
+        }
     }
 }
 

@@ -81,34 +81,44 @@ class ServiceLeague {
     }
 
     async getTable(_id) {
-        return await this.league.findOne({_id}) // TODO install Robo3T
+        try {
+            return await this.league.findOne({_id});
+        } catch (e) {
+            return e.message
+        }
     }
 
     createTable(title, description, season, users_id) {
-        console.log(users_id)
-        var user = new this.league({ title, description, season, users_id });
+        let user = new this.league({ title, description, season, users_id });
         user.save();
         return user;
     }
 
     async updateTable(_id, title, description, season, users_id) {
-        return await this.league.findOneAndUpdate({_id}, {$set: {title, description, season, users_id}}, {new: true})
+        try {
+            return await this.league.findOneAndUpdate({_id}, {$set: {title, description, season, users_id}}, {new: true})
+        } catch (e) {
+            return e.message
+        }
     }
 
     async deleteTable(id, stage, race) {
-        let k = await stage.find({league_id: id})
+        let arrayOfStage = await stage.find({league_id: id});
         let arrayStagesId = [];
-        k.forEach((el, i) => {
-            arrayStagesId.push(el._id)
-        })
-        console.log(arrayStagesId)
-        //console.log(k)
-        let t = await race.find({stage_id: arrayStagesId}).remove();
-        console.log(t)
-        await stage.find({league_id: id}).remove()
-        await this.league.findOneAndDelete({_id: id});
-    }
+        if(arrayOfStage !== null) {
+            arrayOfStage.forEach((el) => {
+                arrayStagesId.push(el._id)
+            });
+            await stage.find({league_id: id}).remove();
+        }
 
+        await race.find({stage_id: arrayStagesId}).remove();
+        try {
+            return await this.league.findOneAndDelete({_id: id});
+        } catch (e) {
+            return e.message
+        }
+    }
 }
 
 module.exports = ServiceLeague;

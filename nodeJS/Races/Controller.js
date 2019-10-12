@@ -21,13 +21,14 @@ class Controller {
 
     async getUserRaces (req, res) {
         let user = await this.user.getUserWithRace(req.params.id);
-        jwt.verify(req.token, 'secretkey', (err, authData) => {
+        res.send(user)
+        /*jwt.verify(req.token, 'secretkey', (err, authData) => {
             if(err) {
                 res.sendStatus(403)
             } else {
                 res.send(user)
             }
-        });
+        });*/
 
     }
 
@@ -42,79 +43,85 @@ class Controller {
     }
 
    async getInstance(req, res) {
-       let user = "";
         switch(req.params.table) {
             case 'user':
-                user = await this.user.getUser(req, res);
+                this.user.getUser(req, res);
                 break;
             case 'race':
-                user = await this.race.getRace(req, res);
+                await this.race.getRace(req, res);
                 break;
             case 'league':
-                user = await this.league.getLeague(req, res);
+                await this.league.getLeague(req, res);
                 break;
             case 'stage':
-                user = await this.stage.getStage(req, res);
+                await this.stage.getStage(req, res);
                 break;
+            default:
+                res.send('Not valid parameter')
         }
-        res.send(user)
     }
 
     async createInstance(req, res) {
-        let rezult = '';
         switch (req.params.table) {
             case 'user':
-                rezult = this.user.createUser(req, res);
+                this.user.createUser(req, res);
                 break;
             case 'race':
                 let obj = {};
                 obj['stage'] = this.stage.getStageModel();
                 obj['league'] = this.league.getLeagueModel();
-                rezult = await this.race.createRace(req, res, 'create', obj);
+                await this.race.createRace(req, res, 'create', obj);
                 break;
             case 'league':
-                rezult = this.league.createLeague(req, res);
+                this.league.createLeague(req, res);
                 break;
             case 'stage':
-                rezult = this.stage.createStage(req, res);
+                this.stage.createStage(req, res, this.league.getLeagueModel());
                 break;
+            default:
+                res.send('Not valid parameter')
         }
-        res.send(rezult);
     }
 
     async updateInstance(req, res) {
-        let rezult = '';
         switch (req.params.table) {
             case 'user':
-                rezult = await this.user.updateUser(req, res);
+                await this.user.updateUser(req, res);
+                break;
             case 'race':
                 let obj = {};
                 obj['stage'] = this.stage.getStageModel();
                 obj['league'] = this.league.getLeagueModel();
-                rezult = await this.race.updateRace(req, res, 'update', obj);
+                await this.race.updateRace(req, res, 'update', obj);
                 break;
             case 'league':
-                rezult = await this.league.updateLeague(req, res);
+                await this.league.updateLeague(req, res);
                 break;
             case 'stage':
-                rezult = await this.stage.updateStage(req, res);
+                await this.stage.updateStage(req, res, this.league.getLeagueModel());
                 break;
+            default:
+                res.send('Not valid parameter')
         }
-        res.send(rezult);
     }
 
     deleteInstance(req, res) {
         switch(req.params.table) {
             case 'user':
-                this.user.deleteUser(req.params.id, this.race.getRace(), this.league.getLeague());
+                this.user.deleteUser(res, req.params.id, this.race.getRaceModel(), this.league.getLeagueModel());
+                break;
             case 'race':
-                this.race.deleteRace(req.params.id);
+                this.race.deleteRace(req.params.id, res);
+                break;
             case 'league':
-                this.league.deleteLeague(req.params.id, this.stage.getStage(), this.race.getRace());
+                this.league.deleteLeague(res, req.params.id, this.stage.getStageModel(), this.race.getRaceModel());
+                break;
             case 'stage':
-                this.stage.deleteStage(req.params.id, this.race.getRace());
+                this.stage.deleteStage(req.params.id, this.race.getRaceModel(), res);
+                break;
+            default:
+                res.send('Not valid parameter')
         }
-        res.sendStatus(200)
     }
 
 }

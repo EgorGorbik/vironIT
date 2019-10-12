@@ -88,30 +88,42 @@ class ServiceUser {
 
 
     async getTable(_id) {
-        return await this.user.findOne({_id});
+        try {
+            return await this.user.findOne({_id});
+        } catch (e) {
+            return e.message
+        }
     }
 
     createTable(name, surname, username) {
-        var user = new this.user({ name, surname, username});
+        let user = new this.user({ name, surname, username});
         user.save();
         return user;
     }
 
     async updateTable(_id, name, surname, username) {
-        return await this.user.findOneAndUpdate({_id}, {$set: {name, surname, username}}, {new: true})
+        try {
+            return await this.user.findOneAndUpdate({_id}, {$set: {name, surname, username}}, {new: true})
+        } catch (e) {
+            return e.message
+        }
     }
 
     async deleteUser(id, race, league) {
-        let tempLeague = await league.findOne({users_id: id});
+        let tempLeague = await league.find({users_id: id});
         if(tempLeague !== null) {
-            tempLeague['users_id'].splice(tempLeague['users_id'].indexOf(id), 1)
-            await league.findOneAndUpdate({_id: tempLeague['_id']}, tempLeague )
+            for(let i = 0; i < tempLeague.length; i++) {
+                tempLeague[i]['users_id'].splice(tempLeague[i]['users_id'].indexOf(id), 1)
+                await league.findOneAndUpdate({_id: tempLeague[i]['_id']}, tempLeague[i] )
+            }
         }
-
         await race.findOneAndDelete({user_id: id});
-        await this.user.findOneAndDelete({_id: id});
+        try {
+            return await this.user.findOneAndDelete({_id: id});
+        } catch (e) {
+            return e.message
+        }
     }
-
 }
 
 module.exports = ServiceUser;

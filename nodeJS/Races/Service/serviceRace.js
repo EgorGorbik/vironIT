@@ -11,6 +11,10 @@ class ServiceRace {
         this.race = mongoose.model('Race', raceSchema);
     }
 
+    getRace() {
+        return this.race;
+    }
+
     async getTable(_id) {
         return await this.race.findOne({_id}) // TODO install Robo3T
     }
@@ -47,17 +51,24 @@ class ServiceRace {
     }
 
     async updateTable(_id, time, description, title, user_id, stage_id, stage, league) {
-        let resultOfValidation = await this.additionalValidation( time, description, title, user_id, stage_id, 'create', stage, league);
+        let resultOfValidation = await this.additionalValidation( time, description, title, user_id, stage_id, 'update', stage, league);
         if (resultOfValidation === true) {
-            var user = this.race.findOneAndUpdate({_id}, {$set: {time, description, title, user_id, stage_id}}, {new: true})
-            return user;
+            try {
+                return this.race.findOneAndUpdate({_id}, {$set: {time, description, title, user_id, stage_id}}, {new: true});
+            } catch (e) {
+                return e.message
+            }
         } else {
             return resultOfValidation
         }
     }
 
     async deleteTable(_id) {
-        await this.race.findOneAndDelete({_id});
+        try {
+            return await this.race.findOneAndDelete({_id});
+        } catch (e) {
+            return e.message
+        }
     }
 
 }

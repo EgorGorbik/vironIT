@@ -17,38 +17,40 @@ class leagueController {
     }
 
     async getStage(req, res) {
-        let user;
-        user = await this.stage.getTable(req.params.id);
-        res.send(user)
+        let user = await this.stage.getTable(req.params.id);
+        res.send(user);
     }
 
-    async createStage(req, res) {
-        let rezult = '';
-        joi.validate(req.body, this.schemaStage, (err, result) => {
+    async createStage(req, res, league) {
+        let result = await joi.validate(req.body, this.schemaStage, (err, result) => {
             if (err) {
-                rezult = err
+                return err
             } else {
-                rezult = this.stage.createTable(req.body.title, req.body.description, req.body.location, req.body.league_id);
+                return this.stage.createTable(req.body.title, req.body.description, req.body.location, req.body.league_id, league);
             }
         })
-        res.send(rezult);
+        res.send(result);
     }
 
-    async updateStage(req, res) {
-        let rezult;
-        rezult = await joi.validate(req.body, this.schemaStage, (err, result) => {
+    async updateStage(req, res, league) {
+        let result = await joi.validate(req.body, this.schemaStage, (err, result) => {
             if (err) {
                 return 'error! Invalid date'
             } else {
-                return this.stage.updateTable(req.params.id, req.body.title, req.body.description, req.body.location, req.body.league_id);
+                return this.stage.updateTable(req.params.id, req.body.title, req.body.description, req.body.location, req.body.league_id, league);
             }
         })
 
-        res.send(rezult);
+        res.send(result);
     }
 
-    deleteStage(id, race) {
-        this.stage.deleteTable(id, race);
+    async deleteStage(id, race, res) {
+        let result = await this.stage.deleteTable(id, race);
+        if (result !== null) {
+            res.sendStatus(200)
+        } else {
+            res.send('This stage does not exist')
+        }
     }
 }
 

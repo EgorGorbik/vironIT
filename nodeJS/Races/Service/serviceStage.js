@@ -15,22 +15,53 @@ class ServiceStage {
     }
 
     async getTable(_id) {
-        return await this.stage.findOne({_id}) // TODO install Robo3T
+        try {
+            return await this.stage.findOne({_id});
+        } catch (e) {
+            return e.message
+        }
     }
 
-    createTable(title, description, location, league_id) {
-        var user = new this.stage({ title, description, location, league_id });
+    async createTable(title, description, location, league_id, league) {
+        let stagesLeague;
+        try {
+            stagesLeague = await league.findOne({_id: league_id});
+        } catch (e) {
+            return e.message
+        }
+        if(stagesLeague === null) {
+            return 'This league does not exist'
+        }
+        let user = new this.stage({title, description, location, league_id});
         user.save();
         return user;
     }
 
-    async updateTable(_id, title, description, location, league_id) {
-        return await this.stage.findOneAndUpdate({_id}, {$set: {title, description, location, league_id}}, {new: true})
+    async updateTable(_id, title, description, location, league_id, league) {
+        let stagesLeague;
+        try {
+            stagesLeague = await league.findOne({_id: league_id});
+        } catch (e) {
+            return 'This league does not exist'
+        }
+        if(stagesLeague === null) {
+            return 'This league does not exist'
+        }
+        try {
+            return await this.stage.findOneAndUpdate({_id}, {$set: {title, description, location, league_id}}, {new: true});
+        } catch (e) {
+            return e.message
+        }
+
     }
 
     async deleteTable(id, race) {
         await race.findOneAndDelete({stage_id: id});
-        await this.stage.findOneAndDelete({_id: id});
+        try {
+            return await this.stage.findOneAndDelete({_id: id});
+        } catch (e) {
+            return e.message
+        }
     }
 
 }
