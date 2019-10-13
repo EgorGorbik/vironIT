@@ -22,6 +22,7 @@
     "swagger-inline": "^1.0.5"
   },
   "devDependencies": {
+    "nodemon": "^1.19.3",
     "swagger-inline-extent": "^1.0.3"
   }
 }

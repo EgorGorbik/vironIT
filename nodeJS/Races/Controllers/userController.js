@@ -23,6 +23,18 @@ class userController {
         return this.user;
     }
 
+    async registerUserToLeague(req, res, league) {
+        let rez = await this.user.registerUserToLeague(req, res, league);
+        res.send(rez)
+    }
+
+    async getUserInfo (req, res) {
+        console.log(req.body)
+        let user;
+        user = await this.user.getTable(req.params.id);
+        return user;
+    }
+
     async getUser(req, res) {
         let user;
         user = await this.user.getTable(req.params.id);

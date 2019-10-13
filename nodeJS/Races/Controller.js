@@ -17,10 +17,21 @@ class Controller {
         this.createInstance = this.createInstance.bind(this);
         this.updateInstance = this.updateInstance.bind(this);
         this.deleteInstance = this.deleteInstance.bind(this);
+        this.registerUserToLeague = this.registerUserToLeague.bind(this);
+    }
+
+    async getUserInfo(req, res) {
+        let k = await this.user.getUserInfo(req, res);
+        return k;
+    }
+    async registerUserToLeague(req, res) {
+        console.log('enter')
+        await this.user.registerUserToLeague(req, res, this.league.getLeagueModel());
     }
 
     async getUserRaces (req, res) {
-        let user = await this.user.getUserWithRace(req.params.id);
+        console.log(req.user.user._id)
+        let user = await this.user.getUserWithRace(req.user.user._id);
         res.send(user)
         /*jwt.verify(req.token, 'secretkey', (err, authData) => {
             if(err) {

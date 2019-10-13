@@ -109,6 +109,31 @@ class ServiceUser {
         }
     }
 
+    async registerUserToLeague(req, res, league) {
+        let userId = req.user.user._id;
+        try {
+            await this.user.find({_id: userId});
+        } catch (e) {
+           return e.message
+        }
+        let leagueId = req.body.leagueId;
+        let checkedLeague;
+        try {
+            checkedLeague = await league.find({_id: leagueId});
+        } catch (e) {
+            return e.message
+        }
+        let arrayOfUsers = checkedLeague[0].users_id;
+        if(arrayOfUsers.indexOf(userId) === -1) {
+            arrayOfUsers.push(userId);
+            let r = await league.findOneAndUpdate({_id: leagueId}, {$set: {users_id: arrayOfUsers}}, {new: true});
+            console.log(r)
+            return r
+        } else {
+            return "This user already exist"
+        }
+    }
+
     async deleteUser(id, race, league) {
         let tempLeague = await league.find({users_id: id});
         if(tempLeague !== null) {

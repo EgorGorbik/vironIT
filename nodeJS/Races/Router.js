@@ -4,26 +4,35 @@ const Controller = require('./Controller') ;
 
 function router(app) {
     let controller = new Controller();
+    let tokenArray = [];
 
-    app.post('/api/login', (req, res) => {
-        const user = {
-            name: req.body.name
-        }
+    app.post('/api/login/:id', async (req, res) => {
+        let user = await controller.getUserInfo(req, res);
         jwt.sign({user}, 'secretkey', (err, token) => {
+            tokenArray.push(token)
+            console.log(tokenArray)
             res.json({
-                token
+                token,
+                user
             })
         })
     })
 
+    app.delete('/logout', (req, res) => {
+        tokenArray = tokenArray.filter(token => token !== req.body.token);
+        res.sendStatus(204)
+    })
+
     function verifyToken(req, res, next) {
-        const headerToken = req.headers['authorization'];
-        if(typeof headerToken !== 'undefined') {
-            req.token = headerToken;
-            next();
-        } else {
-            res.sendStatus(403)
+        const token = req.headers['authorization'];
+        if(token === null) {
+            return res.sendStatus(401)
         }
+        jwt.verify(token, 'secretkey', (err, user) => {
+            if(err) return res.sendStatus(403)
+            req.user = user
+            next()
+        })
 
     }
 
@@ -44,7 +53,7 @@ function router(app) {
        404:
          description: A user with the specified ID was not found.
 */
-    app.get('/getUserRaces/:id', controller.getUserRaces)
+    app.get('/getUserRaces', verifyToken, controller.getUserRaces)
 
     /*
 * @oas [get] /getUserLeagues/{userId}
@@ -115,7 +124,9 @@ function router(app) {
         404:
           description: Instance by given name was not found.
 */
+    app.post('/registerUserToLeague', verifyToken, controller.registerUserToLeague);
     app.post('/:table', controller.createInstance);
+
 
     /*
 * @oas [put] /{table}/{tableId}
