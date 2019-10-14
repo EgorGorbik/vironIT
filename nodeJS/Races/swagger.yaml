@@ -1,9 +1,0 @@
-swagger: "2.0"
-x-api-id: "name"
-info: 
-  version: "1.0.0"
-  title: "name"
-  license: 
-    name: "ISC"
-    url: "http://localhost:3000"
-paths: {}
