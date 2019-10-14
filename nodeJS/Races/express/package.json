@@ -1,0 +1,30 @@
+{
+  "name": "delete",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Controller.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "startSwaggerUI": "swagger project edit",
+    "generSwaggerFile": "swagger-inline \"./*.js\" --base ./swaggerBase.json --out ./api/swagger/swagger.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "joi": "^14.3.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.7.3",
+    "oas": "^0.8.18",
+    "swagger": "^0.7.5",
+    "swagger-editor": "^3.6.36",
+    "swagger-inline": "^1.0.5",
+    "swagger-ui": "^3.24.0",
+    "swagger-ui-express": "^4.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.3",
+    "swagger-inline-extent": "^1.0.3"
+  }
+}
