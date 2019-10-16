@@ -2,7 +2,7 @@ export interface Race {
   id?: string;
   title: string;
   description: string;
-  time: string;
+  time: number;
   userId: string;
   stageId: string;
 }

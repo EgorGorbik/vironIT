@@ -10,6 +10,7 @@ import {
 import { CreateStageDto } from './dto/create-stage.dto';
 import { StagesService } from './stages.service';
 import { Stage } from './interfaces/stage.interface';
+import { ApiImplicitParam } from '@nestjs/swagger';
 
 @Controller('stages')
 export class StagesController {
@@ -21,6 +22,7 @@ export class StagesController {
   }
 
   @Get(':id')
+  @ApiImplicitParam ({name: 'id'})
   findOne(@Param('id') id): Promise<Stage> {
     return this.stageService.findOne(id);
   }
@@ -31,11 +33,13 @@ export class StagesController {
   }
 
   @Delete(':id')
+  @ApiImplicitParam ({name: 'id'})
   delete(@Param('id') id): Promise<Stage> {
     return this.stageService.delete(id);
   }
 
   @Put(':id')
+  @ApiImplicitParam ({name: 'id'})
   update(@Body() updateStageDto: CreateStageDto, @Param('id') id): Promise<Stage> {
     return this.stageService.update(id, updateStageDto);
   }

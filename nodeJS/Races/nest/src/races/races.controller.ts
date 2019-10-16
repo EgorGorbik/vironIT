@@ -11,6 +11,8 @@ import { CreateRaceDto } from './dto/create-race.dto';
 import { RacesService } from './races.service';
 import { Race } from './interfaces/race.interface';
 import { UserService } from '../users/users.service';
+import { ApiImplicitParam } from '@nestjs/swagger';
+import { UpdateRaceDto } from './dto/update-race.dto';
 
 @Controller('races')
 export class RacesController {
@@ -22,6 +24,7 @@ export class RacesController {
   }
 
   @Get(':id')
+  @ApiImplicitParam ({name: 'id'})
   findOne(@Param('id') id): Promise<Race> {
     return this.raceService.findOne(id);
   }
@@ -32,12 +35,14 @@ export class RacesController {
   }
 
   @Delete(':id')
+  @ApiImplicitParam ({name: 'id'})
   delete(@Param('id') id): Promise<Race> {
     return this.raceService.delete(id);
   }
 
   @Put(':id')
-  update(@Body() updateRaceDto: CreateRaceDto, @Param('id') id): Promise<Race> {
+  @ApiImplicitParam ({name: 'id'})
+  update(@Body() updateRaceDto: UpdateRaceDto, @Param('id') id): Promise<Race> {
     return this.raceService.update(id, updateRaceDto);
   }
 }

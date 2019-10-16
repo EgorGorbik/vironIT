@@ -1,12 +1,14 @@
 import { ApiModelProperty} from '@nestjs/swagger';
 
-export class CreateStageDto {
+export class UpdateRaceDto {
   @ApiModelProperty()
   readonly title: string;
   @ApiModelProperty()
   readonly description: string;
   @ApiModelProperty()
-  readonly location: string;
+  readonly time: number;
   @ApiModelProperty()
-  readonly leagueId: string;
+  readonly userId: string;
+  @ApiModelProperty()
+  readonly stageId: string;
 }
