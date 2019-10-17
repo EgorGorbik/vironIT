@@ -1,4 +1,4 @@
-const Race = require('../Service/serviceRace') ;
+const Race = require('./serviceRace') ;
 const joi = require('joi');
 
 class leagueController {

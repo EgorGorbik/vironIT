@@ -1,4 +1,4 @@
-const Stage = require('../Service/serviceStage') ;
+const Stage = require('./serviceStage') ;
 const joi = require('joi');
 
 class leagueController {

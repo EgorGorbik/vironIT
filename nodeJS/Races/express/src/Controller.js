@@ -1,7 +1,7 @@
-const User = require('./Controllers/userController') ;
-const Race = require('./Controllers/raceController') ;
-const League = require('./Controllers/leagueController') ;
-const Stage = require('./Controllers/stageController') ;
+const User = require('./users/userController') ;
+const Race = require('./races/raceController') ;
+const League = require('./leagues/leagueController') ;
+const Stage = require('./stages/stageController') ;
 const jwt = require('jsonwebtoken');
 
 class Controller {

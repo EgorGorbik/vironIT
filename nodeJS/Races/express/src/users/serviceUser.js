@@ -47,7 +47,7 @@ class ServiceUser {
 
 
 
-    async getUserForLeague(id) {
+    async getUserForLeague(_id) {
         let result = await this.user.aggregate([
                 {
                     $project: {
@@ -69,7 +69,7 @@ class ServiceUser {
 
                         }
                 },
-                { $match : { _id : id } },
+                { $match : {_id } },
             ],
             async function (err, response) {
                 if (err) {

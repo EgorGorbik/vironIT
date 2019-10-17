@@ -2,12 +2,12 @@
   "name": "delete",
   "version": "1.0.0",
   "description": "",
-  "main": "Controller.js",
+  "main": "src/Controller.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
+    "start": "node src/app.js",
     "startSwaggerUI": "swagger project edit",
-    "generSwaggerFile": "swagger-inline \"./*.js\" --base ./swaggerBase.json --out ./api/swagger/swagger.json"
+    "generSwaggerFile": "swagger-inline \\\"./*.js\\\" --base ./swaggerBase.json --out src/api/swagger/swagger.json"
   },
   "author": "",
   "license": "ISC",
