@@ -55,10 +55,10 @@ class ServiceStage {
 
     }
 
-    async deleteTable(id, race) {
+    async deleteTable(_id, race) {
         await race.findOneAndDelete({stage_id: id});
         try {
-            return await this.stage.findOneAndDelete({_id: id});
+            return await this.stage.findOneAndDelete({_id});
         } catch (e) {
             return e.message
         }

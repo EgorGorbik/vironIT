@@ -102,7 +102,7 @@ class ServiceLeague {
         }
     }
 
-    async deleteTable(id, stage, race) {
+    async deleteTable(_id, stage, race) {
         let arrayOfStage = await stage.find({league_id: id});
         let arrayStagesId = [];
         if(arrayOfStage !== null) {
@@ -114,7 +114,7 @@ class ServiceLeague {
 
         await race.find({stage_id: arrayStagesId}).remove();
         try {
-            return await this.league.findOneAndDelete({_id: id});
+            return await this.league.findOneAndDelete({_id});
         } catch (e) {
             return e.message
         }
