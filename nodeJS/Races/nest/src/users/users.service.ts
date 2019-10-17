@@ -13,9 +13,8 @@ export class UserService {
               @InjectModel('Race') private readonly raceModel: Model<Race>,
               ) {}
 
-  async getUserWithRace(id): Promise<any> {
-    // return await this.userModel.findOne({ _id: id });
-    let result = await this.userModel.aggregate([
+  async getUserWithRace(user: User): Promise<any> {
+    const result = await this.userModel.aggregate([
         {
           $project: {
             _id: {
@@ -35,7 +34,7 @@ export class UserService {
               as: 'racesForThisUser',
             },
         },
-        { $match : { _id : id } },
+        { $match : { _id : user['_id'] } },
       ],
     );
     return Promise.resolve(result);

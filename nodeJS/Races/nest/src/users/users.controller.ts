@@ -12,6 +12,7 @@ import { UserService } from './users.service';
 import { User } from './interfaces/user.interface';
 import { ApiImplicitParam } from '@nestjs/swagger';
 import { AuthGuard } from '../config/auth.guard';
+import { UserDec } from './user.decorator';
 
 @Controller('users')
 export class UserController {
@@ -22,11 +23,10 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get('getRaces/:id')
+  @Get('getRaces/')
   @UseGuards(new AuthGuard())
-  @ApiImplicitParam ({name: 'id'})
-  getUserWithRace(@Param('id') id): Promise<User> {
-    return this.userService.getUserWithRace(id);
+  getUserWithRace(@UserDec() user): Promise<User> {
+    return this.userService.getUserWithRace(user);
   }
 
   @Get('getLeagues/:id')
