@@ -16,7 +16,7 @@ export class LeaguesService {
     return await this.leagueModel.find();
   }
 
-  async getSeasonRace(season) {
+  async getSeasonRace(season): Promise<League> {
     const result = await this.leagueModel.aggregate([
         { $match : { season } },
         {
@@ -71,17 +71,12 @@ export class LeaguesService {
           },
         },
       ],
-      async function(err, response) {
-        if (err) {
-        } else {
-        }
-      },
     );
     return Promise.resolve(result);
   }
 
-  async findOne(id: string): Promise<League> {
-    return await this.leagueModel.findOne({ _id: id });
+  async findOne(_id: string): Promise<League> {
+    return await this.leagueModel.findOne({_id});
   }
 
   async create(user: League): Promise<League> {

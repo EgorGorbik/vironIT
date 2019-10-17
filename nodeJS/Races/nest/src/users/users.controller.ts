@@ -10,8 +10,8 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './users.service';
 import { User } from './interfaces/user.interface';
-import { ApiImplicitParam } from '@nestjs/swagger';
-import { AuthGuard } from '../config/auth.guard';
+import { ApiImplicitParam, ApiModelProperty } from '@nestjs/swagger';
+import { AuthGuard } from '../shared/auth.guard';
 import { UserDec } from './user.decorator';
 
 @Controller('users')

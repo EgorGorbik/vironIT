@@ -19,11 +19,11 @@ export class RacesService {
     return await this.raceModel.find();
   }
 
-  async findOne(id: string): Promise<Race> {
-    return await this.raceModel.findOne({ _id: id });
+  async findOne(_id: string): Promise<Race> {
+    return await this.raceModel.findOne({_id});
   }
 
-  async additionalValidation(race) {
+  async additionalValidation(race): Promise<string> {
     let tempStage;
     try {
       tempStage = await this.stageModel.findOne({_id: race.stageId});
@@ -37,15 +37,15 @@ export class RacesService {
     const tempLeague = await this.leagueModel.findOne({_id: leagueID});
     const arrayUserID = tempLeague.usersId;
     if (arrayUserID.indexOf(race.userId) !== -1) {
-      return true;
+      return 'true';
     } else {
       return 'user не из этой лиги';
     }
   }
 
-  async create(race: Race): Promise<any> {
+  async create(race: Race): Promise<string | Race> {
     const resultOfValidation = await this.additionalValidation(race);
-    if (resultOfValidation === true) {
+    if (resultOfValidation === 'true') {
       const newRace = new this.raceModel(race);
       return await newRace.save();
     } else {
@@ -57,9 +57,9 @@ export class RacesService {
     return await this.raceModel.findByIdAndRemove(id);
   }
 
-  async update(id: string, race: UpdateRaceDto): Promise<any> {
+  async update(id: string, race: UpdateRaceDto): Promise<string | Race> {
     const resultOfValidation = await this.additionalValidation(race);
-    if (resultOfValidation === true) {
+    if (resultOfValidation === 'true') {
       return await this.raceModel.findByIdAndUpdate(id, race, { new: true });
     } else {
       return resultOfValidation;

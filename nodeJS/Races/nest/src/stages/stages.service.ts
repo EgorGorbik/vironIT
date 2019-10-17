@@ -16,8 +16,8 @@ export class StagesService {
     return await this.stageModel.find();
   }
 
-  async findOne(id: string): Promise<Stage> {
-    return await this.stageModel.findOne({ _id: id });
+  async findOne(_id: string): Promise<Stage> {
+    return await this.stageModel.findOne({_id});
   }
 
   async create(stage: Stage): Promise<Stage> {

@@ -13,8 +13,8 @@ export class UserService {
               @InjectModel('Race') private readonly raceModel: Model<Race>,
               ) {}
 
-  async getUserWithRace(user: User): Promise<any> {
-    const result = await this.userModel.aggregate([
+  async getUserWithRace(user: User): Promise<User> {
+    const result: User = await this.userModel.aggregate([
         {
           $project: {
             _id: {
@@ -40,8 +40,8 @@ export class UserService {
     return Promise.resolve(result);
   }
 
-  async getUserForLeague(id) {
-    const result = await this.userModel.aggregate([
+  async getUserForLeague(_id: string): Promise<User> {
+    const result: User = await this.userModel.aggregate([
         {
           $project: {
             _id: {
@@ -62,15 +62,8 @@ export class UserService {
 
             },
         },
-        { $match : { _id : id } },
+        { $match : {_id} },
       ],
-      async function(err, response) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(response);
-        }
-      },
     );
     return Promise.resolve(result);
   }
@@ -79,8 +72,8 @@ export class UserService {
     return await this.userModel.find();
   }
 
-  async findOne(id: string): Promise<User> {
-    return await this.userModel.findOne({ _id: id });
+  async findOne(_id: string): Promise<User> {
+    return await this.userModel.findOne({_id});
   }
 
   async create(user: User): Promise<User> {
@@ -97,15 +90,16 @@ export class UserService {
       }
     }
     await this.raceModel.find({userId: id}).remove();
-    return await this.userModel.findOneAndDelete({_id: id});
+    const _id = id;
+    return await this.userModel.findOneAndDelete({_id});
   }
 
   async update(id: string, item: User): Promise<User> {
     return await this.userModel.findByIdAndUpdate(id, item, { new: true });
   }
 
-  async login(id: string) {
-    const user = await this.userModel.find({ _id: id });
+  async login(_id: string): Promise<User> {
+    const user = await this.userModel.find({_id});
     return jwt.sign({user}, 'secret');
   }
 }
