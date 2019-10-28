@@ -1,8 +1,12 @@
 import {User} from "../Interfaces/Users.interface";
-const ADD_USER = "ADD_USER";
-const GET_USERS = "GET_USERS";
+import {ADD_USER, GET_USERS} from "../Constants/users";
 
-export default (state = [{}], action: { type: string; users: Array<User>}) => {
+export interface usersAction {
+    type: string;
+    users: Array<User>;
+}
+
+export default (state = [{}], action: usersAction) => {
     switch (action.type) {
         case ADD_USER:
             return [...state, action.users];

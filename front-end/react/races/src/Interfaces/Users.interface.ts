@@ -2,7 +2,7 @@ export interface Users {
     users?: any;
     getUsers?: any;
     isLoading?: any;
-    rows: Array<{
+    rows?: Array<{
         id?: string;
         username: string | undefined;
         name: string | undefined;
@@ -17,5 +17,4 @@ export interface User {
     name: string | undefined;
     surname: string | undefined;
     password: string | undefined;
-    users?: Array<any>;
 }

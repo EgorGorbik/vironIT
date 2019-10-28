@@ -1,7 +1,10 @@
-const CHANGE_TO_TRUE = "CHANGE_TO_TRUE";
-const CHANGE_TO_FALSE = "CHANGE_TO_FALSE";
+import {CHANGE_TO_FALSE, CHANGE_TO_TRUE} from "../Constants/isLoadingConstants";
 
-export default (state = false, action: { type: string; }) => {
+export interface isLoadingAction {
+    type: string;
+}
+
+export default (state: boolean = false, action: isLoadingAction) => {
     switch (action.type) {
         case CHANGE_TO_TRUE:
             return true;

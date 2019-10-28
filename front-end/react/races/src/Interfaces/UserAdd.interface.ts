@@ -5,10 +5,11 @@ export interface UserAdd {
     isAdd: boolean;
     id?: string;
     user?: User;
-    users?: Users;
+    users?: Users | undefined;
     getUsers? :any;
     isLoading?: any;
     getUser?: any;
+    editUser?: any;
 }
 
 

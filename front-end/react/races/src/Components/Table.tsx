@@ -5,13 +5,26 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import {User, Users} from "../Interfaces/Users.interface";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 import {getAsyncUsers} from "../Actions/user.action";
+import "bootstrap/dist/css/bootstrap.css";
 
-export class UserTable extends Component<Users> {
-    componentWillMount(): void {
+interface Props {
+    users?: any;
+    getUsers?: any;
+    isLoading?: any;
+    rows?: Array<{
+        id?: string;
+        username: string | undefined;
+        name: string | undefined;
+        surname: string | undefined;
+        password: string | undefined;
+    }>
+
+}
+export class UserTable extends Component<Props> {
+    componentDidMount(): void {
         this.props.getUsers();
     }
 
@@ -44,6 +57,9 @@ export class UserTable extends Component<Users> {
                         </TableBody>
                     </Table>
                 </Paper>
+                <Link to={`/users/add/`} style={{ textDecoration: 'none'}}>
+                    <button className="btn btn-primary">Создать</button>
+                </Link>
             </div>
         );
 
