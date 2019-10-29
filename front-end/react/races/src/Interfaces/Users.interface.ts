@@ -12,7 +12,7 @@ export interface Users {
 }
 
 export interface User {
-    id?: string;
+    _id?: string;
     username: string | undefined;
     name: string | undefined;
     surname: string | undefined;

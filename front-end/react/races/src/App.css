@@ -20,3 +20,8 @@
 .App-link {
   color: #09d3ac;
 }
+
+Form {
+  width: 30%;
+  margin: 4% auto;
+}

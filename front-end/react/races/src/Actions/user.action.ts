@@ -1,4 +1,4 @@
-import {addUser, editUser, getUser, getUsers} from "../Services/user.service";
+import {addUser, deleteUser, editUser, getUser, getUsers} from "../Services/user.service";
 
 export const getAsyncUsers = () => {
     return (dispatch: (arg0: { type: string; users?: any }) => void) => {
@@ -22,5 +22,11 @@ export const editAsyncUser = (id: string, user: any) => {
 export const addAsyncUser = (user: any) => {
     return (dispatch: (arg0: { type: string; users?: any }) => void) => {
             addUser(dispatch, user);
+    }
+};
+
+export const deleteAsyncUser = (id: string) => {
+    return (dispatch: (arg0: { type: string;}) => void) => {
+        deleteUser(dispatch, id);
     }
 };

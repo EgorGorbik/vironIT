@@ -1,9 +1,11 @@
 import React, {ChangeEvent, Component} from 'react';
-import {UserAdd} from "../Interfaces/UserAdd.interface";
-import {User, Users} from "../Interfaces/Users.interface";
+import {UserAdd} from "../../Interfaces/UserAdd.interface";
+import {User, Users} from "../../Interfaces/Users.interface";
 import {connect} from "react-redux";
-import {addAsyncUser, editAsyncUser, getAsyncUser, getAsyncUsers} from '../Actions/user.action';
+import {addAsyncUser, deleteAsyncUser, editAsyncUser, getAsyncUser, getAsyncUsers} from '../../Actions/user.action';
 import "bootstrap/dist/css/bootstrap.css";
+import {Form, Button} from "react-bootstrap";
+import {Link} from "react-router-dom";
 
 interface Props {
     user: User;
@@ -11,7 +13,7 @@ interface Props {
     editUser(id: string, user: User): void;
     getUser(id: string): void;
     addUser(user: User): void;
-    id: string;
+    id: string; 
     isLoading: boolean;
 }
 
@@ -75,35 +77,36 @@ export class UserForm extends Component<Props, State> {
 
     render() {
         const {isAdd, id, user} = this.props;
-        if(isAdd) {
-            this.form = (<div>
-                <p>Add new user</p>
-                <p>username</p>
-                <input id='username' onChange={this.changeInputValue}/>
-                <p>name</p>
-                <input id='name' onChange={this.changeInputValue}/>
-                <p>surname</p>
-                <input id='surname' onChange={this.changeInputValue}/>
-                <p>password</p>
-                <input id='password' onChange={this.changeInputValue}/>
-                <p></p>
-                <button className="btn btn-primary" onClick={this.sendData}>Submit</button>
-            </div>);
-        } else {
-            this.form = (<div>
-                <p>edit user</p>
-                <p>username</p>
-                <input id='username' onChange={this.changeInputValue} value={this.state.username}/>
-                <p>name</p>
-                <input id='name' onChange={this.changeInputValue} value={this.state.name}/>
-                <p>surname</p>
-                <input id='surname' onChange={this.changeInputValue} value={this.state.surname}/>
-                <p>password</p>
-                <input id='password' onChange={this.changeInputValue} value={this.state.password}/>
-                <p></p>
-                <button className="btn btn-primary" onClick={this.sendData}>Submit</button>
-            </div>);
-        }
+            this.form = (
+                <Form>
+                    <Form.Group controlId="formBasicUsername">
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control id='username' type="text" placeholder="Enter username" onChange={this.changeInputValue} value={this.state.username}/>
+                    </Form.Group>
+
+                    <Form.Group controlId="formBasicName">
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control id='name' type="text" placeholder="Enter name" onChange={this.changeInputValue} value={this.state.name}/>
+                    </Form.Group>
+
+                    <Form.Group controlId="formBasicSurname">
+                        <Form.Label>Surname</Form.Label>
+                        <Form.Control id='surname' type="text" placeholder="Enter ursname" onChange={this.changeInputValue} value={this.state.surname}/>
+                    </Form.Group>
+
+                    <Form.Group controlId="formBasicPassword">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control id='password' type="password" placeholder="Password" onChange={this.changeInputValue} value={this.state.password}/>
+                        <Form.Text className="text-muted">
+                            We'll never share your password with anyone else.
+                        </Form.Text>
+                    </Form.Group>
+                    <Button variant="primary" type="submit" onClick={this.sendData} >
+                        Submit
+                    </Button>
+                </Form>
+            );
+
         let spinner = (<div>Loading...</div>);
         let display = (!this.props.isLoading)? this.form : spinner;
         return (

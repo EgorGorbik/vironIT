@@ -1,8 +1,8 @@
 import {Route, Switch} from "react-router";
-import UsersTable from "./Table";
+import UsersTable from "./Users/UserTable";
 import {BrowserRouter} from "react-router-dom";
 import React from "react";
-import UserForm from "./UsersForm";
+import UserForm from "./Users/UsersForm";
 
 const AppRouter = () => (
     <BrowserRouter>

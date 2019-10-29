@@ -29,7 +29,10 @@ export const editUser = (dispatch: any, id: string, user: User) => {
     })
         .then(response => response.json())
         .then(data => {
-            dispatch({type: 'CHANGE_TO_FALSE'});
+            setTimeout(() => {
+                dispatch({type: 'CHANGE_TO_FALSE'});
+                dispatch({type: 'UPDATE_USER', user: data});
+            }, 2000)
         })
 }
 
@@ -44,6 +47,23 @@ export const addUser = (dispatch: any, user: User) => {
     })
         .then(response => response.json())
         .then(data => {
+            dispatch({type: 'CHANGE_TO_FALSE'});
+            dispatch({type: 'ADD_USER', user: data});
+        })
+}
+
+export const deleteUser = (dispatch: any, id: string) => {
+    fetch(`/users/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            dispatch({type: 'DELETE_USER', user: data});
             dispatch({type: 'CHANGE_TO_FALSE'});
         })
 }
