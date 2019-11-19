@@ -1,0 +1,13 @@
+@import "color";
+
+.newEvent {
+  margin-left: 2px;
+  font-size: 14px;
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border-radius: 25px;
+  background-color: $c-red;
+  text-align: center;
+  color: $c-white;
+}
