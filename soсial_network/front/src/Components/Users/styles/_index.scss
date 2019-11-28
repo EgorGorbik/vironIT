@@ -1,0 +1,8 @@
+@import "color";
+
+.user{
+  cursor: pointer;
+}
+.user:hover {
+  background-color: $c-green;
+}

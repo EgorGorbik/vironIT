@@ -5,10 +5,11 @@ import './styles/_index.scss';
 import {getIsLogin, getUser, getUsers} from "../../Redux/Selectors/users.selector";
 import {getIsLoading} from "../../Redux/Selectors/loader.selector";
 import {getAuthUser} from "../../Redux/Selectors/authorization.selector";
-import {getNewToken} from "../../Redux/ThunkCreators/users.thunk";
-import {setAuthUser} from "../../Redux/ActionCreators/users.action";
+import {getNewToken, getUserChats} from "../../Redux/ThunkCreators/users.thunk";
+import {setAuthUser, setMessage} from "../../Redux/ActionCreators/users.action";
 import logo from '../../images/logo.png';
 import {connect} from "react-redux";
+import {socket} from "../../Socket/socket";
 
 export class Header extends Component<any> {
 
@@ -18,7 +19,16 @@ export class Header extends Component<any> {
     }
 
     render() {
-        console.log(this.props.isLogin)
+        socket.on('messageFromServer',(obj: any) => {
+            alert('msg')
+            console.log(obj);
+            this.props.setMessage({from: obj.from, text: obj.message})
+            this.props.getUserChats()
+        })
+        socket.on('some event',(m: any) => {
+            //alert('somebody new ' + m)
+        })
+
         let countOfQuery;
         if(this.props.isLogin) {
             if(this.props.authUser.friendRequests.length !== 0) {
@@ -61,7 +71,9 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps =  ({
     getNewToken,
-    setAuthUser
+    setAuthUser,
+    setMessage,
+    getUserChats
 });
 
 export default withRouter(connect(

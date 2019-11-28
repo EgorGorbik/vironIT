@@ -12,6 +12,27 @@ class ServiceUser {
         }
     }
 
+    async getUsername(_id) {
+        try {
+            let user = await this.user.findOne({_id});
+            let obj = {_id: user._id, username: user.username};
+            return obj;
+        } catch (e) {
+            return e.message
+        }
+    }
+
+    async getUsersByLetters(letters) {
+        try {
+            let k = await this.user.find({"username": {$regex: '^' + letters}});
+            return k;
+        } catch (e) {
+            return e.message
+        }
+    }
+
+
+
 
 
     async getTables() {
@@ -23,7 +44,6 @@ class ServiceUser {
     }
 
     createTable(userArg) {
-        console.log(userArg)
         let user = new this.user(userArg);
         user.save();
         return user;

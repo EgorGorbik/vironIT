@@ -28,9 +28,7 @@ class Router extends Component<any> {
                 <Route exact path='/:id/friends'>
                     <Friends />
                 </Route>
-                <Route exact path='/:id/message/:id2'>
-                    <Chat />
-                </Route>
+                <PrivateRoute path='/:id/message/:id2' component={Chat}/>
                 <PrivateRoute path='/:id/users' component={Users}/>
                 <PrivateRoute path='/:id/message' component={Chats}/>
                 <Route path='/:id'>

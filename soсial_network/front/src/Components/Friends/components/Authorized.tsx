@@ -16,6 +16,8 @@ import {getAuthUser} from "../../../Redux/Selectors/authorization.selector";
 
 export class Authorized extends Component<any> {
     render() {
+        /*console.log(this.props.friends.sentFriendRequests);
+        console.log(this.props.friends)
         let queryToFriend;
         let sentQueryToFriend;
         let friends;
@@ -25,9 +27,9 @@ export class Authorized extends Component<any> {
             console.log(queryToFriend)
             sentQueryToFriend = this.props.users.filter((el: any) => this.props.authUser.sentFriendRequests.includes(el._id));
             friends = this.props.users.filter((el: any) => this.props.authUser.friends.includes(el._id));
-            count = queryToFriend.length
+            count = queryToFriend.length*/
 
-        if (this.props.isLoading || (this.props.authUser.name === undefined)) {
+        if (this.props.isLoading || (this.props.authUser.name === undefined) || (this.props.friends.friends === undefined)) {
             return <Spinner animation="border" variant="success" />
         } else {
             return (
@@ -36,7 +38,7 @@ export class Authorized extends Component<any> {
                 <div className='friends'>
                     <p>запросы в друзья</p>
                     <ListGroup>
-                        {queryToFriend.map((row: any) => (
+                        {this.props.friends.friendRequests.map((row: any) => (
                             <div>
                                 <ListGroup.Item>{row.username}<Button
                                     onClick={() => this.props.acceptRequestAddToFriend(row._id, this.props.user)}
@@ -46,7 +48,7 @@ export class Authorized extends Component<any> {
                     </ListGroup>
                     <p>друзья</p>
                     <ListGroup>
-                        {friends.map((row: any) => (
+                        {this.props.friends.friends.map((row: any) => (
                             <div>
                                 <ListGroup.Item>{row.username}
                                     <Button className='float-right'>написать</Button>
@@ -59,7 +61,7 @@ export class Authorized extends Component<any> {
                     </ListGroup>
                     <p>запросы, которые вы отправили</p>
                     <ListGroup>
-                        {sentQueryToFriend.map((row: any) => (
+                        {this.props.friends.sentFriendRequests.map((row: any) => (
                             <div>
                                 <ListGroup.Item>{row.username}
                                     <Button onClick={() => {
@@ -81,7 +83,8 @@ const mapStateToProps = (state: any) => ({
     users: getUsers(state),
     isLoading: getIsLoading(state),
     isLogin: getIsLogin(state),
-    authUser: getAuthUser(state)
+    authUser: getAuthUser(state),
+    friends: state.friends
 });
 
 const mapDispatchToProps =  ({

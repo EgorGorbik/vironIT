@@ -6,6 +6,7 @@ import {getNewToken, getPublicInfo} from "../../../Redux/ThunkCreators/users.thu
 import {setAuthUser} from "../../../Redux/ActionCreators/users.action";
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
+import {getAuthUser} from "../../../Redux/Selectors/authorization.selector";
 
 export class Authorized extends Component<any> {
     render() {
@@ -22,7 +23,7 @@ export class Authorized extends Component<any> {
 }
 
 const mapStateToProps = (state: any) => ({
-    authUser: state.authUser,
+    authUser: getAuthUser(state),
 });
 
 const mapDispatchToProps =  ({

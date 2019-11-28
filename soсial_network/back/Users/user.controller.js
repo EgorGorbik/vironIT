@@ -1,10 +1,12 @@
 const joi = require('joi');
 const User = require('./user.service');
+const Message = require('../Messages/message.service');
 const jwt = require('../config/jwt');
 
 class userController {
     constructor() {
         this.user = new User();
+        this.message = new Message();
         this.schemaUser = joi.object().keys({
             name: joi.string().required(),
             surname: joi.string().required(),
@@ -16,7 +18,7 @@ class userController {
             sentFriendRequests: joi.array()
         });
         this.refreshTokens = [];
-        this.time = '10m';
+        this.time = '665s';
     }
 
     async getUsers(req, res) {
@@ -28,6 +30,12 @@ class userController {
     async getUser(req, res) {
         let user;
         user = await this.user.getTable(req.params.id);
+        res.send(user)
+    }
+
+    async getUsersByLetters(req, res) {
+        let user;
+        user = await this.user.getUsersByLetters(req.params.letters);
         res.send(user)
     }
 
@@ -140,13 +148,17 @@ class userController {
             if (err) {
                 res.sendStatus(403);
             } else {
-                console.log('req.token1 ', req.token)
                 let user;
                 user = await this.user.getUserByUsername(authData.username);
-                res.json({
-                    message: 'permission received',
-                    user: user
-                });
+                let chatsId = await this.message.getChatsId(user._id);
+                console.log(chatsId);
+
+                user['chatsId'] = chatsId;
+                    res.json({
+                        message: 'permission received',
+                        user: user,
+                        chatsId: chatsId
+                    });
             }
         });
     }
@@ -163,6 +175,38 @@ class userController {
                 } else {
                     res.send(rez)
                 }
+            }
+        });
+    }
+
+    async getUsersFriends(req, res) {
+        jwt.verify(req.token, 'access_token', async (err, authData) => {
+            if (err) {
+                res.sendStatus(403);
+            } else {
+                let user = await this.user.getTable(authData._id);
+                let friends = [];
+                let friendRequests = [];
+                let sentFriendRequests = [];
+                for(let i = 0; i < user.friends.length; i++) {
+                    let friend = await this.user.getUsername(user.friends[i]);
+                    friends.push(friend);
+                }
+                for(let i = 0; i < user.friendRequests.length; i++) {
+                    let friend = await this.user.getUsername(user.friendRequests[i]);
+                    friendRequests.push(friend);
+                }
+                for(let i = 0; i < user.sentFriendRequests.length; i++) {
+                    let friend = await this.user.getUsername(user.sentFriendRequests[i]);
+                    sentFriendRequests.push(friend);
+                }
+                let resultObject = {
+                    friends: friends,
+                    friendRequests: friendRequests,
+                    sentFriendRequests: sentFriendRequests
+                }
+                res.send(resultObject);
+
             }
         });
     }

@@ -1,7 +1,7 @@
 import {changeLoaderToFalse, changeLoaderToTrue} from "../ActionCreators/loading.action";
 import {loginUserQuery} from "../../Services/authorization.service";
 import {setAuthUser, setErrorAuthUser} from "../ActionCreators/users.action";
-import {getAllUsers, getUserChats} from "./users.thunk";
+import {getAllUsers, getNewToken, getUserChats, getUsersFriends} from "./users.thunk";
 import {registerUserQuery} from "../../Services/authorization.service";
 import {authUserQuery} from "../../Services/authorization.service";
 import {connectSocket} from "./socket.thunk";
@@ -39,10 +39,13 @@ export const loginUser = (user: any) => {
             .then(res => res.ok ? res.json() : Promise.reject(res))
             .then((data: any) => {
                 dispatch(setAuthUser(data.user));
-                dispatch(getAllUsers());
+               //dispatch(getAllUsers());
                 dispatch(getUserChats(data.user._id));
+                dispatch(connectSocket(data.user._id));
                 setToLocalStorage(data.accessToken, data.refreshToken, data.user._id, data.time);
                 dispatch(changeIsLoginToTrue());
+                dispatch(getUsersFriends());
+                dispatch(changeLoaderToFalse());
             })
             .catch((er: any) => {
                 alert(er.statusText);
@@ -59,8 +62,9 @@ export const registerUser = (user: any) => {
             .then(res => res.ok ? res.json() : Promise.reject(res))
             .then((data: any) => {
                 dispatch(setAuthUser(data.user));
-                dispatch(getAllUsers());
-                dispatch(getUserChats(data.user._id));
+                //dispatch(getUsersFriends());
+               // dispatch(getUserChats(data.user._id));
+                dispatch(connectSocket(data.user._id));
                 setToLocalStorage(data.accessToken, data.refreshToken, data.user._id, data.time);
                 dispatch(changeIsLoginToTrue());
                 dispatch(changeLoaderToFalse());
@@ -73,11 +77,17 @@ export const registerUser = (user: any) => {
 
 export const isAuthUser = () => {
     return (dispatch: any) => {
+        if ((Number(sessionStorage.getItem('endTokenValidityTime'))) - (new Date().getTime() / 1000) < 5) {
+            dispatch(getNewToken());
+            dispatch(changeLoaderToTrue());
+            return;
+        }
+
         dispatch(changeLoaderToTrue());
-        dispatch(getAllUsers());
         authUserQuery()
             .then(res => res.ok ? res.json() : Promise.reject(res))
             .then((data: any) => {
+                dispatch(getUsersFriends());
                 dispatch(getUserChats(data.user._id));
                 dispatch(setAuthUser(data.user));
                 dispatch(connectSocket(data.user._id));

@@ -16,7 +16,9 @@ function router(app) {
     app.put('/cancelFriendRequest/:id', verifyToken, (req, res) => controller.cancelFriendRequest(req, res));
     app.put('/acceptFriendRequest/:id', verifyToken, (req, res) => controller.acceptFriendRequest(req, res));
     app.put('/deleteFriend/:id', verifyToken, (req, res) => controller.deleteFriendRequest(req, res));
+    app.get('/getUsersFriends', verifyToken, (req, res) => controller.getUsersFriends(req, res));
     app.get('/userPublicInfo/:id', (req, res) => controller.getUserPublicInfo(req, res));
+    app.get('/usersByLetters/:letters', (req, res) => controller.getUsersByLetters(req, res));
 
 
 

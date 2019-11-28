@@ -5,7 +5,9 @@ import {getAuthUser} from "../Redux/Selectors/authorization.selector";
 
 export const PrivateRoute = ({ component: Component, authUser, ...rest }: any) => (
     <Route {...rest} render={(props) => {
-        if(props.match.params.id === authUser._id) {
+        if(authUser.name === undefined) {
+            return <div>Loading</div>
+        } else if(props.match.params.id === authUser._id) {
             return (<Component/>)
         } else {
             return <Redirect to="/login"/>

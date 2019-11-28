@@ -8,16 +8,15 @@ import {getIsLoading} from "../../Redux/Selectors/loader.selector";
 import {Spinner} from "react-bootstrap";
 import Authorized from "./Components/Authorized";
 import NotAuthorized from "./Components/NotAuthorized";
+import {getAuthUser} from "../../Redux/Selectors/authorization.selector";
 
 class Profile extends Component<any> {
 
     componentDidMount() {
+        console.log(this.props.chat)
         if(this.props.match.params.id !== this.props.authUser._id) {
             this.props.getPublicInfo(this.props.match.params.id);
         }
-       /* let date = new Date().getTime() / 1000;
-        let deadLine = sessionStorage.getItem('endTokenValidityTime');
-        let leftTime = (Number(deadLine) - date) * 1000 ;*/
     }
 
     render() {
@@ -38,7 +37,9 @@ class Profile extends Component<any> {
 const mapStateToProps = (state: any) => ({
     isLoading: getIsLoading(state),
     isLogin: getIsLogin(state),
-    authUser: state.authUser,
+    authUser: getAuthUser(state),
+    friends: state.friends,
+    chat: state.chat
 });
 
 const mapDispatchToProps =  ({

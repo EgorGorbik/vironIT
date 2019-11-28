@@ -11,4 +11,9 @@ export const setUserChats = (chats: any) => ({type: 'SET_USER_CHATS', chats: cha
 export const setErrorUserChats = (error: any) => ({type: 'SET_ERROR_USER_CHATS', error: error});
 
 export const setMessages = (messages: any) => ({type: 'SET_MESSAGES', messages});
+export const setMessage = (message: any) => ({type: 'SET_MESSAGE', message});
+export const delMessages = () => ({type: 'DEL_MESSAGES'});
 export const setErrorMessages = (error: any) => ({type: 'SET_ERROR_MESSAGES', error: error});
+
+export const setFriends = (friends: any) => ({type: 'SET_FRIENDS', friends});
+export const setErrorFriends = (error: any) => ({type: 'SET_ERROR_Friends', error: error});

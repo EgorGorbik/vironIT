@@ -6,13 +6,16 @@ import {getIsLoading} from "../../Redux/Selectors/loader.selector";
 import {
     acceptRequestAddToFriend, deleteQueryToAddToFriends,
     deleteUserFromFriends,
-    getNewToken, getPublicInfo, queryToAddToFriend, queryToAddToFriendsSocket, addChat
+    getNewToken, getPublicInfo, queryToAddToFriend, queryToAddToFriendsSocket, addChat, getUsersByLetters
 } from "../../Redux/ThunkCreators/users.thunk";
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
 import Header from "../Header";
 import {Button, ListGroup} from "react-bootstrap";
 import {setAuthUser} from "../../Redux/ActionCreators/users.action";
+import './styles/_index.scss';
+import Input from "./component/Input";
+import {createSocketRoom} from "../../Redux/ThunkCreators/socket.thunk";
 
 
 export class AllUsers extends Component<any> {
@@ -54,12 +57,15 @@ export class AllUsers extends Component<any> {
         }
     }
 
+
+
     render() {
         if(this.props.isLoading || (this.props.authUser.name === undefined)) {
             return <div>Loading...</div>
         } else {
             return <div>
                 <Header/>
+                <Input />
                 <ListGroup>
                     {this.props.users.map((row: any) => {
                         let isOnline;
@@ -69,7 +75,7 @@ export class AllUsers extends Component<any> {
 
                         if (this.props.authUser.friends.includes(row._id)) {
                             return <div>
-                                <ListGroup.Item>{row.username}
+                                <ListGroup.Item className='user'>{row.username}
                                     <Button className='float-right' onClick={() => this.write(row._id)}>написать</Button>
                                     <Button onClick={()=> {this.props.deleteUserFromFriends(row._id)}} variant="danger" className='float-right'>удалить из друзей</Button>
                                     {isOnline}
@@ -78,7 +84,7 @@ export class AllUsers extends Component<any> {
                         }
                         if (this.props.authUser.friendRequests.includes(row._id)) {
                             return <div>
-                                <ListGroup.Item>{row.username}
+                                <ListGroup.Item className='user'>{row.username}
                                     <Button className='float-right' onClick={() => this.write(row._id)}>написать</Button>
                                     <Button onClick={() => this.props.acceptRequestAddToFriend(row._id, this.props.user)} variant="danger" className='float-right'>принять запрос</Button>
                                     {isOnline}
@@ -87,14 +93,14 @@ export class AllUsers extends Component<any> {
                         }
                         if (this.props.authUser.sentFriendRequests.includes(row._id)) {
                             return <div>
-                                <ListGroup.Item>{row.username}
+                                <ListGroup.Item className='user'>{row.username}
                                     <Button className='float-right' onClick={() => this.write(row._id)}>написать</Button>
                                     <Button onClick={()=> {this.props.deleteQueryToAddToFriends(row._id)}} variant="danger" className='float-right'>отменить запрос</Button>
                                 </ListGroup.Item>
                             </div>
                         } else {
                             return <div>
-                                <ListGroup.Item>{row.username}
+                                <ListGroup.Item className='user'>{row.username}
                                     <Button className='float-right' onClick={() => this.write(row._id)}>написать</Button>
                                     <Button onClick={() => this.addToFriend(row._id)} className='float-right'>добавить в друзья</Button>
                                     {isOnline}
@@ -127,7 +133,9 @@ const mapDispatchToProps =  ({
     queryToAddToFriend,
     setAuthUser,
     queryToAddToFriendsSocket,
-    addChat
+    addChat,
+    getUsersByLetters,
+    createSocketRoom
 });
 
 export default withRouter(connect(

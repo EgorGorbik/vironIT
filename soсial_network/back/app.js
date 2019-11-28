@@ -7,6 +7,8 @@ const socketEvents = require('./Socket/socket');
 require('./Users/user.model');
 require('./Messages/message.model');
 const app = express();
+const cors = require('cors');
+app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 const server = app.listen(5000, () => console.log('Server started on port 5000'));

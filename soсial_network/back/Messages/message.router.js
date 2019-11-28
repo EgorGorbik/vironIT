@@ -2,8 +2,9 @@ const Controller = require('./message.controller') ;
 function router(app) {
     let controller = new Controller();
 
-    app.get('/messages', (req, res) => controller.getMessages(req, res));
     app.get('/chats/:id',  (req, res) => controller.getChats(req, res));
+    app.get('/messages/:id/:n', verifyToken,  (req, res) => controller.getMessages(req, res));
+    app.get('/chatId/:id', verifyToken,  (req, res) => controller.getChatId(req, res));
     app.post('/messages/', (req, res) => controller.createMessage(req, res));
     app.put('/messages/:id', (req, res) => controller.updateMessage(req, res));
 

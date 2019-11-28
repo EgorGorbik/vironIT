@@ -13,10 +13,36 @@ class messageController {
     }
 
     async getMessages(req, res) {
-        let messages;
-        messages = await this.message.getMessage(req.body);
-        res.send(messages)
+        jwt.verify(req.token, 'access_token', async (err, authData) => {
+            if (err) {
+                res.sendStatus(403);
+            } else {
+                let messages;
+                messages = await this.message.getMessage([req.params.id, authData._id]);
+                let result = [];
+                let from = messages.messages.length-(req.params.n)*25;
+                for(let i = from; i < from+25; i++) {
+                    if(messages.messages[i] !== undefined) result.push(messages.messages[i])
+                }
+                res.send(result)
+            }
+        });
     }
+
+    async getChatId(req, res) {
+        jwt.verify(req.token, 'access_token', async (err, authData) => {
+            if (err) {
+                res.sendStatus(403);
+            } else {
+                let messages;
+                messages = await this.message.getChatId([req.params.id, authData._id]);
+                res.send(messages._id)
+            }
+        });
+    }
+
+
+
 
     async getChats(req, res) {
         let rez =  await this.message.getUserChats(req.params.id);

@@ -1,19 +1,30 @@
 import {
-    acceptRequestAddToFriendQuery, addChatQuery, addToFriendQuery, createConnectToSocket, deleteQueryToAddToFriendsQuery, deleteUserFromFriendsQuery,
-    getNewTokenQuery, getPublicInfoQuery, getUserChatsQuery,
-    getUsersQuery, sentMessageSocketQuery, sentQueryToAddToFriendsSocket,
+    acceptRequestAddToFriendQuery,
+    addChatQuery,
+    addToFriendQuery,
+    createConnectToSocket,
+    deleteQueryToAddToFriendsQuery,
+    deleteUserFromFriendsQuery, getMessagesQuery,
+    getNewTokenQuery,
+    getPublicInfoQuery,
+    getUserChatsQuery,
+    getUsersByLettersQuery, getUsersFriendsQuery,
+    getUsersQuery,
+    sentMessageSocketQuery,
+    sentQueryToAddToFriendsSocket,
 } from "../../Services/user.service";
 import {changeLoaderToFalse, changeLoaderToTrue} from "../ActionCreators/loading.action";
 import {
     setAuthUser,
-    setErrorAuthUser,
+    setErrorAuthUser, setErrorFriends,
     setErrorUser, setErrorUserChats,
-    setErrorUsers,
+    setErrorUsers, setFriends, setMessages,
     setUser, setUserChats,
     setUsers
 } from "../ActionCreators/users.action";
 import {changeIsLoginToTrue} from "../ActionCreators/login.action";
-import {connectSocket} from "./socket.thunk";
+import {connectSocket, createSocketRoom} from "./socket.thunk";
+import {isAuthUser} from "./authorization.thunk";
 
 const setToLocalStorage = (accessToken: any, refreshToken: any, id: any, time: any) => {
     sessionStorage.setItem('accessToken', accessToken);
@@ -66,18 +77,39 @@ export const getUserChats = (id: any) => (dispatch: any) => {
         })
 };
 
+export const getMessages = (id: any, n: any) => (dispatch: any) => {
+    getMessagesQuery(id, n)
+        .then((response: { json: () => void; }) => response.json())
+        .then((data: any) => {
+            console.log(data)
+            dispatch(setMessages(data));
+            dispatch(changeLoaderToFalse());
+        })
+        .catch((er: any) => {
+            console.log('провальное получение чвтов')
+            dispatch(setErrorUserChats(er.statusText))
+            dispatch(changeLoaderToFalse());
+        })
+};
+
 
 export const getNewToken = () => {
+    console.log('get new token')
     return (dispatch: any) => {
         let user = {token: sessionStorage.getItem('refreshToken')};
         dispatch(changeLoaderToTrue());
         getNewTokenQuery(user)
             .then((response: { json: () => void; }) => response.json())
             .then((data: any) => {
+                console.log('получили новый токен')
+                console.log(data)
                 setToLocalStorage(data.accessToken, sessionStorage.getItem('refreshToken') , sessionStorage.getItem('id') , data.time);
                 dispatch(changeLoaderToFalse());
+                dispatch(isAuthUser());
             })
             .catch((er: any) => {
+                console.log('ошибка получения нового токена')
+                alert('ошибка получения нового токена')
                 dispatch(setErrorAuthUser(er.statusText))
                 dispatch(changeLoaderToFalse());
             })
@@ -92,6 +124,7 @@ export const acceptRequestAddToFriend = (id: any, user: any) => {
             .then((response: { json: () => void; }) => response.json())
             .then((data: any) => {
                 dispatch(setAuthUser(data));
+                dispatch(getUsersFriends());
                 dispatch(changeLoaderToFalse());
             })
             .catch((er: any) => {
@@ -107,6 +140,7 @@ export const deleteUserFromFriends = (id: any) => {
             .then((response: { json: () => void; }) => response.json())
             .then((data: any) => {
                 dispatch(setAuthUser(data));
+                dispatch(getUsersFriends());
                 dispatch(changeLoaderToFalse());
             })
             .catch((er: any) => {
@@ -123,6 +157,7 @@ export const deleteQueryToAddToFriends = (id: any) => {
             .then((response: { json: () => void; }) => response.json())
             .then((data: any) => {
                 dispatch(setAuthUser(data));
+                dispatch(getUsersFriends());
                 dispatch(changeLoaderToFalse());
             })
             .catch((er: any) => {
@@ -142,6 +177,7 @@ export const queryToAddToFriend = (id: any, user: any) => {
             .then((data: any) => {
                 dispatch(queryToAddToFriendsSocket(id))
                 dispatch(setAuthUser(data));
+                dispatch(getUsersFriends());
                 dispatch(changeLoaderToFalse());
             })
             .catch((er: any) => {
@@ -162,8 +198,37 @@ export const getPublicInfo = (id: any) => {
                 dispatch(changeLoaderToFalse());
             })
             .catch((er: any) => {
-                alert('финея давай всё по новой')
                 dispatch(setErrorUser(er.statusText))
+                dispatch(changeLoaderToFalse());
+            })
+    }
+};
+
+export const getUsersByLetters = (letters: any) => {
+    return (dispatch: any) => {
+        getUsersByLettersQuery(letters)
+            .then((response: { json: () => void; }) => response.json())
+            .then((data: any) => {
+                dispatch(setUsers(data));
+            })
+            .catch((er: any) => {
+                dispatch(setErrorUser(er.statusText))
+                dispatch(changeLoaderToFalse());
+            })
+    }
+};
+
+export const getUsersFriends = () => {
+    return (dispatch: any) => {
+        dispatch(changeLoaderToTrue());
+        getUsersFriendsQuery()
+            .then((response: { json: () => void; }) => response.json())
+            .then((data: any) => {
+                dispatch(setFriends(data));
+               dispatch(changeLoaderToFalse());
+            })
+            .catch((er: any) => {
+                dispatch(setErrorFriends(er));
                 dispatch(changeLoaderToFalse());
             })
     }
@@ -175,10 +240,10 @@ export const queryToAddToFriendsSocket = (id: any) => {
     }
 };
 
-export const sentMessageSocket = (id: any, message: any, chatId: any) => {
-    console.log('sanki')
+export const sentMessageSocket = (id: any, message: any) => {
+    console.log('sanki ', id)
     return (dispatch: any) => {
-        sentMessageSocketQuery(id, message, chatId)
+        sentMessageSocketQuery(id, message)
     }
 };
 
@@ -191,7 +256,7 @@ export const addChat = (id1: any, id2: any) => {
             .then((response: { json: () => void; }) => response.json())
             .then((data: any) => {
                 dispatch(getUserChats(id1));
-                dispatch(changeLoaderToFalse());
+                dispatch(createSocketRoom(id2))
             })
             .catch((er: any) => {
                 dispatch(changeLoaderToFalse());

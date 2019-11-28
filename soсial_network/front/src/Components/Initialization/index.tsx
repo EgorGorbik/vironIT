@@ -14,9 +14,19 @@ import {Header} from "../Header";
 export class Initialization extends Component<any> {
 
     componentWillMount(): any {
+        socket.on('messageFromServer',(obj: any) => {
+            alert('somebody new')
+        })
+
         if(sessionStorage.getItem('id') === null) return;
         this.props.isAuthUser();
 
+        socket.on('some event',() => {
+            console.log('aaa')
+            alert('somebody new')
+        })
+
+        /*socket.emit('register', sessionStorage.getItem('id') );
         socket.on('private_chat',(data: any) => {
             var id = data.username;
             var message = data.message;
@@ -35,7 +45,7 @@ export class Initialization extends Component<any> {
             console.log(chat)
             this.props.setMessages(chat)
             this.forceUpdate()
-        });
+        });*/
     }
 
     render() {

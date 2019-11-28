@@ -19,10 +19,31 @@ export const getUsersQuery = () => {
     })
 }
 
+export const getUsersByLettersQuery = (letters: any) => {
+    return fetch(`/usersByLetters/${letters}`, {
+        method: 'GET',
+        headers: defaultHeaders,
+    })
+}
+
 export const getUserChatsQuery = (id: any) => {
     return fetch(`/chats/${id}`, {
         method: 'GET',
         headers: defaultHeaders,
+    })
+}
+
+export const getMessagesQuery = (id: any, n :any) => {
+    return fetch(`/messages/${id}/${n}`, {
+        method: 'GET',
+        headers: headerWithAuthorization(),
+    })
+}
+
+export const getUsersFriendsQuery = () => {
+    return fetch(`/getUsersFriends`, {
+        method: 'GET',
+        headers: headerWithAuthorization(),
     })
 }
 
@@ -44,6 +65,7 @@ export const acceptRequestAddToFriendQuery = (id: any, user: any) => {
 }
 
 export const getNewTokenQuery = (user: any) => {
+    console.log('user ', user)
     return fetch(`/token`, {
         body: JSON.stringify(user),
         method: 'POST',
@@ -83,7 +105,13 @@ export const addChatQuery = (body: any) => {
 
 
 export const createConnectToSocket = (id: any) => {
+    console.log('2')
     socket.emit('register', id);
+}
+
+export const createSocketRoomQuery = (id: any, id2: any) => {
+    console.log('2')
+    socket.emit('createRoom', id, id2);
 }
 
 export const sentQueryToAddToFriendsSocket = (id: any) => {
@@ -93,10 +121,11 @@ export const sentQueryToAddToFriendsSocket = (id: any) => {
     });
 }
 
-export const sentMessageSocketQuery = (id: any, message: any, chatId: any) => {
-    socket.emit('chat',{
+export const sentMessageSocketQuery = (id: any, message: any) => {
+    console.log('id ', id);
+    socket.emit('messageFromClient',{
         to : id,
         message : message,
-        chatId: chatId
+        from: sessionStorage.getItem('id')
     });
 }

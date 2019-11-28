@@ -7,20 +7,53 @@ class ServiceMessage {
 
     async getMessage(arr) {
         try {
-            return await this.user.findOne({members: { $in: arr }});
+            let k = await this.user.findOne({members: { $all: arr }});
+            return k;
+        } catch (e) {
+            return e.message
+        }
+    }
+
+    async getChatsId(id) {
+        try {
+            console.log('id ', id)
+            id = String(id)
+            console.log(typeof id)
+            let k = await this.user.find({members: id});
+            console.log('user chats')
+            console.log(k)
+            return k;
+        } catch (e) {
+            return e.message
+        }
+    }
+
+    async getChatId(arr) {
+        try {
+            console.log('arr ', arr)
+            let k = await this.user.findOne({members: { $all: arr }});
+            console.log('k ', k)
+            return k;
         } catch (e) {
             return e.message
         }
     }
 
     createTable(userArg) {
-        console.log(userArg)
         let user = new this.user(userArg);
         user.save();
         return user;
     }
 
-    async updateTable(_id, arg) {
+    async updateTable(arr, arg) {
+        try {
+            return await this.user.findOneAndUpdate({members: { $all: arr }}, {$push: {messages: arg}}, {new: true})
+        } catch (e) {
+            return e.message
+        }
+    }
+
+    async getMessages(_id, arg) {
         try {
             return await this.user.findOneAndUpdate({_id}, {$push: {messages: arg}}, {new: true})
         } catch (e) {
@@ -38,16 +71,18 @@ class ServiceMessage {
                 let obj = chats[i];
                 let interlocutorId = chats[i].members.filter(el => el !== id);
                 interlocutorId = interlocutorId[0];
-                console.log('id ', interlocutorId)
                 let interlocutorName = await this.realUser.findOne({_id: interlocutorId});
-                console.log('name ', interlocutorName)
                 interlocutorName = interlocutorName.username;
-                console.log('nname ', interlocutorName);
                 chats[i]['name'] = interlocutorName;
             }
-            console.log(chats);
-            console.log(rez);
-            return chats
+            let result = [];
+            for(let i = 0; i < chats.length; i++) {
+                    let obj = {members: chats[i].members, messages: [chats[i].messages[chats[i].messages.length-1]], name: chats[i].name};
+                    result.push(obj);
+            }
+
+
+            return result
         } catch (e) {
             return e.message
         }

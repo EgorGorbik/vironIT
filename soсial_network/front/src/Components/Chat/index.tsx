@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, ReactDOM} from 'react';
 import {getIsLogin, getUser, getUsers} from "../../Redux/Selectors/users.selector";
 import {getIsLoading} from "../../Redux/Selectors/loader.selector";
 import {
@@ -7,27 +7,24 @@ import {
     deleteUserFromFriends,
     deleteQueryToAddToFriends,
     getPublicInfo,
-    sentMessageSocket
+    sentMessageSocket, getMessages
 } from "../../Redux/ThunkCreators/users.thunk";
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
-import {Button, ListGroup} from "react-bootstrap";
+import {Button, ListGroup, Spinner} from "react-bootstrap";
 import Header from '../Header';
-import {setMessages} from "../../Redux/ActionCreators/users.action";
-import {socket} from "../../Socket/socket";
+import {delMessages, setMessage, setMessages} from "../../Redux/ActionCreators/users.action";
+import './styles/_index.scss';
 
 export class Chat extends Component<any> {
     private chat: any;
     private id: any;
+    private messagesEnd: any = React.createRef();
+
 
     state = {
-        inputVal: ""
-    }
-
-    componentWillMount() {
-        console.log(this.props)
-        console.log(this.props.match)
-        //this.props.isAuthUser(this.props.match.params.id);
+        inputVal: "",
+        numberMessagesPart: 1
     }
 
     changeInput = (val: any) => {
@@ -37,47 +34,81 @@ export class Chat extends Component<any> {
     }
 
     sendMessage = () => {
-        console.log(this.id)
-        console.log(this.state.inputVal);
-        console.log(this.chat);
-
+        console.log('sernt Message')
+        if(this.state.inputVal === '') return;
         let obj = {from: this.props.auutUser, text: this.state.inputVal};
         console.log(obj);
         let chat = this.props.chat;
         chat.push(obj);
         console.log(chat)
-        this.props.setMessages(chat)
-        this.props.sentMessageSocket(this.id, this.state.inputVal, this.chat._id);
+        //this.props.setMessages(chat)
+        //this.props.setMessage(obj)
+        console.log('this.id ', sessionStorage.getItem('id'));
+        this.props.sentMessageSocket(this.props.match.params.id2, this.state.inputVal);
         this.setState({
             inputVal: ''
         })
+        console.log(this.props.chat)
+    }
+
+    componentDidMount(): void {
+        this.scrollToBottom();
+    }
+
+    componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<{}>, snapshot?: any): void {
+        this.scrollToBottom();
+    }
+
+    scrollToBottom = () => {
+        console.log(this.messagesEnd);
+        console.log(this.messagesEnd.scrollTop);
+        console.log(this.messagesEnd.scrollHeight);
+        if((this.messagesEnd.scrollTop !== undefined) && (this.messagesEnd.scrollHeight !== undefined)) {
+            this.messagesEnd.scrollTop = this.messagesEnd.scrollHeight;
+            this.messagesEnd.addEventListener('scroll',  (e: any) => {
+                if(this.messagesEnd.scrollTop === 0) {
+                    this.props.getMessages(this.props.match.params.id2, this.state.numberMessagesPart+1);
+                    this.setState({
+                        numberMessagesPart: this.state.numberMessagesPart+1
+                    })
+                }
+            });
+        }
+        console.log(this.messagesEnd.current);
+       /* if(this.messagesEnd.current !== null && (this.messagesEnd.current !== undefined)) {
+            console.log(this.messagesEnd)
+            console.log(this.messagesEnd.current)
+            this.messagesEnd.scrollIntoView({ behavior: 'smooth' })
+        }*/
+    }
+
+    componentWillMount(): void {
+        this.props.getMessages(this.props.match.params.id2, this.state.numberMessagesPart)
+    }
+
+    componentWillUnmount(): void {
+        console.log('delete!');
+        this.props.delMessages();
     }
 
     render() {
-        console.log(this.props.chat)
-        console.log(this.props.chats[0])
-        let content;
-        console.log(this.chat)
-        if(this.props.chats[0] !== undefined) {
-            console.log(this.props.chats)
+        /*if(this.props.chats[0] !== undefined && (!this.props.isLoading)) {
             this.chat = this.props.chats.find((x: any) => x.members.includes(this.props.match.params.id2));
-            this.props.setMessages(this.chat.messages)
-            this.id = this.chat.members.filter((el:any) => el !== sessionStorage.getItem('id'));
-            this.id = this.id[0];
-        }
+            //this.id = this.props.match.params.id2;
+        }*/
 
-
-            if(this.props.isLoading || (this.props.chats[0] === undefined) ) {
-                content = <div>Loading...</div>
+            console.log(this.props.chat)
+            if(this.props.isLoading ) {
+                return <Spinner animation="border" variant="success" />
             } else {
-                console.log(this.props.chats)
-                console.log(this.props.match.params.chatId)
-              let chat = this.props.chats.find((x: any) => {console.log(x._id); return (x._id === this.props.match.params.chatId)});
-                console.log(this.chat)
-                content = <div>
+                console.log(this.props.chat);
+                return <div>
                     <Header/>
+                    <div className='chatArea'>
+                        <div className='messages' ref={(el: any) => {if(el !== null) {this.messagesEnd = el;}}}>
+
                     <ListGroup>
-                        {this.chat.messages.map((row: any) => {
+                        {this.props.chat.map((row: any) => {
                             if(row.from === sessionStorage.getItem('id')) {
                                 return <div>
                                     you: {row.text}
@@ -91,14 +122,16 @@ export class Chat extends Component<any> {
                         })
                         }
                     </ListGroup>
-                    <input onChange={this.changeInput} value={this.state.inputVal}></input>
-                    <button onClick={this.sendMessage}>Отправить</button>
+                            <div className='bottom'></div>
+                        </div>
+                        <div className='input'>
+                            <input onChange={this.changeInput} value={this.state.inputVal}></input>
+                            <Button className='button' onClick={this.sendMessage}>Отправить</Button>
+                        </div>
+
+                    </div>
                 </div>
             }
-
-        return (
-            <div>{content}</div>
-        )
     }
 }
 
@@ -119,7 +152,10 @@ const mapDispatchToProps =  ({
     deleteQueryToAddToFriends,
     getPublicInfo,
     sentMessageSocket,
-    setMessages
+    setMessages,
+    setMessage,
+    getMessages,
+    delMessages
 });
 
 export default withRouter(connect(

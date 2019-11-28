@@ -1,0 +1,15 @@
+@import "color";
+
+.name {
+  display: inline-block;
+  width: 8%;
+  margin-right: 3%;
+}
+
+.chat{
+  cursor: pointer;
+}
+
+.chat:hover {
+  background-color: $c-green;
+}

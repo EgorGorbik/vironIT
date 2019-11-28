@@ -25,8 +25,6 @@ class Login extends Component<any> {
     })
 
     componentDidUpdate() {
-        console.log(!this.props.isLoading)
-        console.log(this.props.authUser.name)
         if(!this.props.isLoading && (this.props.authUser.name !== undefined)) {
             this.props.history.push(`/${this.props.authUser._id}`)
         }
@@ -49,9 +47,9 @@ class Login extends Component<any> {
                                     placeholder='Enter username'
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    className={errors.username ? 'errorBorder' : undefined}
+                                    className={errors.username && touched.username ? 'errorBorder' : undefined}
                                 />
-                                <Error className='errorMessage'>{errors.username ? <div>{errors.username}</div> : null}</Error>
+                                <Error className='errorMessage'>{errors.username && touched.username ? <div>{errors.username}</div> : null}</Error>
                             </div>
 
                             <div>
@@ -62,9 +60,9 @@ class Login extends Component<any> {
                                     placeholder='Enter password'
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    className={errors.password ? 'errorBorder' : undefined}
+                                    className={errors.password && touched.password ? 'errorBorder' : undefined}
                                 />
-                                <Error className='errorMessage'>{errors.password ? <div>{errors.password}</div> : null}</Error>
+                                <Error className='errorMessage'>{errors.password && touched.password ? <div>{errors.password}</div> : null}</Error>
                             </div>
                             <Div>
                                 <Send type="submit" disabled={isSubmitting}>Submit</Send>

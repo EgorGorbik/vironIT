@@ -6,6 +6,7 @@ import {withRouter} from "react-router";
 import {connect} from "react-redux";
 import Authorized from "./components/Authorized";
 import NotAuthorized from "./components/NotAuthorized";
+import {getAuthUser} from "../../Redux/Selectors/authorization.selector";
 
 export class Friends extends Component<any> {
     componentWillMount() {
@@ -13,6 +14,7 @@ export class Friends extends Component<any> {
     }
 
     render() {
+        console.log(this.props.friends)
         if(this.props.match.params.id === this.props.authUser._id) {
              return <Authorized />
         } else {
@@ -26,7 +28,8 @@ const mapStateToProps = (state: any) => ({
     users: getUsers(state),
     isLoading: getIsLoading(state),
     isLogin: getIsLogin(state),
-    authUser: state.authUser
+    authUser: getAuthUser(state),
+    friends: state.friends
 });
 
 const mapDispatchToProps =  ({

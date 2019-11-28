@@ -5,6 +5,7 @@ import usersReducer from '../Reducers/users.reducer';
 import isLoadingReducer from '../Reducers/isLoading.reducer';
 import userReducer from '../Reducers/user.reducer';
 import authUserReducer from '../Reducers/atuhUser.reducer';
+import friendsReducer from '../Reducers/friends.reducer';
 import {composeWithDevTools} from "redux-devtools-extension";
 import chatsReducer from '../Reducers/chats.reducer';
 import chatReducer from '../Reducers/chat.reducer';
@@ -16,7 +17,8 @@ export const rootReducer = combineReducers({
     isLoading: isLoadingReducer,
     authUser: authUserReducer,
     chats: chatsReducer,
-    chat: chatReducer
+    chat: chatReducer,
+    friends: friendsReducer
 });
 
 export const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));

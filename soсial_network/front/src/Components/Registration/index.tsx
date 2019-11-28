@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import {Link, withRouter} from "react-router-dom";
-import { Form, Button } from 'react-bootstrap';
+import {Form, Button, Spinner} from 'react-bootstrap';
 import {registerUser} from "../../Redux/ThunkCreators/authorization.thunk";
 import {connect} from "react-redux";
 import {getAuthUser, getUser, getUsers} from "../../Redux/Selectors/users.selector";
@@ -40,7 +40,7 @@ class Registration extends Component<any> {
 
     render() {
         if(this.props.isLoading) {
-            return <div>Loading...</div>
+            return <Spinner animation="border" variant="success" />
         } else {
             return (
                 <Formik  initialValues={{}} validationSchema={this.validationSchema} onSubmit={(values) => { this.props.registerUser(values);}}>
@@ -55,9 +55,9 @@ class Registration extends Component<any> {
                                     placeholder='Enter name'
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    className={errors.name ? 'errorBorder' : undefined}
+                                    className={errors.name && touched.name ? 'errorBorder' : undefined}
                                 />
-                                <Error className='errorMessage'>{errors.name ? <div>{errors.name}</div> : null}</Error>
+                                <Error className='errorMessage'>{errors.name && touched.name ? <div>{errors.name}</div> : null}</Error>
                             </div>
 
                             <div>
@@ -68,9 +68,9 @@ class Registration extends Component<any> {
                                     placeholder='Enter surname'
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    className={errors.surname ? 'errorBorder' : undefined}
+                                    className={errors.surname && touched.surname ? 'errorBorder' : undefined}
                                 />
-                                <Error className='errorMessage'>{errors.surname ? <div>{errors.surname}</div> : null}</Error>
+                                <Error className='errorMessage'>{errors.surname && touched.surname ? <div>{errors.surname}</div> : null}</Error>
                             </div>
 
                             <div>
@@ -81,9 +81,9 @@ class Registration extends Component<any> {
                                     placeholder='Enter username'
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    className={errors.username ? 'errorBorder' : undefined}
+                                    className={errors.username && touched.username ? 'errorBorder' : undefined}
                                 />
-                                <Error className='errorMessage'>{errors.username ? <div>{errors.username}</div> : null}</Error>
+                                <Error className='errorMessage'>{errors.username&& touched.username ? <div>{errors.username}</div> : null}</Error>
                             </div>
 
                             <div>
@@ -94,12 +94,12 @@ class Registration extends Component<any> {
                                     placeholder='Enter password'
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    className={errors.password ? 'errorBorder' : undefined}
+                                    className={errors.password && touched.password ? 'errorBorder' : undefined}
                                 />
-                                <Error className='errorMessage'>{errors.password ? <div>{errors.password}</div> : null}</Error>
+                                <Error className='errorMessage'>{errors.password && touched.password ? <div>{errors.password}</div> : null}</Error>
                             </div>
                             <Div>
-                                <Send type="submit"  disabled={isSubmitting}>Submit</Send>
+                                <Send type="submit" name="submit" id="submit"  disabled={isSubmitting}>Submit</Send>
                             </Div>
                             <Link to='/login'>
                                 <L>Login</L>

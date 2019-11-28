@@ -21,6 +21,8 @@ export class Authorized extends Component<any> {
             friends = this.props.users.filter((el: any) => this.props.user.friends.includes(el._id));
         }
 
+        console.log(this.props.user.name)
+        console.log(this.props.isLoading)
         if (this.props.isLoading || (this.props.user.name === undefined)) {
             return <Spinner animation="border" variant="success" />
         } else {
